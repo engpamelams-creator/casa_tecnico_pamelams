@@ -17,92 +17,96 @@
 
 ## 🧠 Parte 1: Domínio Teórico (Deep Learning)
 
-> *Clique nas setas para revelar as respostas detalhadas.*
+> *Clique nas perguntas abaixo para revelar as respostas.*
 
 <details>
-  <summary><h3>❓ 1. O que é uma variável? (Conceito & Analogia)</h3></summary>
-  
-  > **Resposta Senior:**
-  >
-  > Uma variável é uma **alocação nomeada de memória** que armazena um valor mutável durante o ciclo de vida de uma aplicação. Em arquitetura de software, variáveis bem nomeadas são a base da documentação do código.
-  >
-  > 🎰 **Analogia do Cassino:**
-  > Imagine um display digital acima de uma mesa de Poker chamado `ValorDoPote`. No início da rodada, ele mostra `R$ 0,00`. Conforme os jogadores apostam, o valor *varia* (R$ 50, R$ 100...). O display é a variável (o container), e o número brilhando nele é o valor (o dado).
+<summary><strong>❓ 1. O que é uma variável? (Conceito & Analogia)</strong></summary>
+<br>
+
+> **Resposta Senior:**
+>
+> Uma variável é uma **alocação nomeada de memória** que armazena um valor mutável durante o ciclo de vida de uma aplicação. Em arquitetura de software, variáveis bem nomeadas são a base da documentação do código.
+>
+> 🎰 **Analogia do Cassino:**
+> Imagine um display digital acima de uma mesa de Poker chamado `ValorDoPote`. No início da rodada, ele mostra `R$ 0,00`. Conforme os jogadores apostam, o valor *varia* (R$ 50, R$ 100...). O display é a variável (o container), e o número brilhando nele é o valor (o dado).
+
+</details>
+
+<details>
+<summary><strong>❓ 2. Função vs. Loop (Quando usar?)</strong></summary>
+<br>
+
+> **Resposta Senior:**
+>
+> *   **Função (Encapsulamento):** É um bloco de lógica isolado projetado para realizar uma tarefa única e reutilizável. Promove o princípio DRY (Don't Repeat Yourself).
+> *   **Loop (Iteração):** É uma estrutura de controle de fluxo que repete instruções enquanto uma condição for verdadeira.
+>
+> 🎫 **No Sistema de Rifa:**
+> *   **Função:** `sortearVencedor()` -> Uma ação que eu chamo quando preciso (no clique de um botão).
+> *   **Loop:** `for (i = 1; i <= 100; i++)` -> A ação automática do sistema gerando os 100 números de bilhetes iniciais para o banco de dados.
 
 </details>
 
 
 <details>
-  <summary><h3>❓ 2. Função vs. Loop (Quando usar?)</h3></summary>
-  
-  > **Resposta Senior:**
-  >
-  > *   **Função (Encapsulamento):** É um bloco de lógica isolado projetado para realizar uma tarefa única e reutilizável. Promove o princípio DRY (Don't Repeat Yourself).
-  > *   **Loop (Iteração):** É uma estrutura de controle de fluxo que repete instruções enquanto uma condição for verdadeira.
-  >
-  > 🎫 **No Sistema de Rifa:**
-  > *   **Função:** `sortearVencedor()` -> Uma ação que eu chamo quando preciso (no clique de um botão).
-  > *   **Loop:** `for (i = 1; i <= 100; i++)` -> A ação automática do sistema gerando os 100 números de bilhetes iniciais para o banco de dados.
+<summary><strong>❓ 3. Estrutura de Dados para Jogo do Bicho</strong></summary>
+<br>
+
+> **Resposta Senior:**
+>
+> A escolha ideal é um **Array de Objetos** (`List<Object>` ou `Dictionary` dependendo da busca).
+>
+> **Por quê?**
+> Dados reais são complexos. Um array simples `[50, 20, 10]` guardaria o valor, mas perderia o *contexto*.
+> Um Objeto encapsula a entidade completa:
+> ```json
+> [
+>   { "id": 1, "apostador": "Pamela", "animal": "Leão", "valor": 50.00, "timestamp": "2024-01-07" },
+>   { "id": 2, "apostador": "João", "animal": "Gato", "valor": 20.00, "timestamp": "2024-01-07" }
+> ]
+> ```
+> Isso permite filtrar, somar e auditar as apostas com facilidade.
 
 </details>
 
 
 <details>
-  <summary><h3>❓ 3. Estrutura de Dados para Jogo do Bicho</h3></summary>
-  
-  > **Resposta Senior:**
-  >
-  > A escolha ideal é um **Array de Objetos** (`List<Object>` ou `Dictionary` dependendo da busca).
-  >
-  > **Por quê?**
-  > Dados reais são complexos. Um array simples `[50, 20, 10]` guardaria o valor, mas perderia o *contexto*.
-  > Um Objeto encapsula a entidade completa:
-  > ```json
-  > [
-  >   { "id": 1, "apostador": "Pamela", "animal": "Leão", "valor": 50.00, "timestamp": "2024-01-07" },
-  >   { "id": 2, "apostador": "João", "animal": "Gato", "valor": 20.00, "timestamp": "2024-01-07" }
-  > ]
-  > ```
-  > Isso permite filtrar, somar e auditar as apostas com facilidade.
+<summary><strong>❓ 4. O Poder do 'If/Else' (Controle de Fluxo)</strong></summary>
+<br>
+
+> **Resposta Senior:**
+> O `if/else` é a espinha dorsal da lógica de negócios. Ele direciona o comportamento do software baseando-se em estados.
+>
+> 💻 **Validação de Saldo (Clean Code):**
+> ```javascript
+> const validarTransacao = (saldo, aposta) => {
+>   if (saldo < aposta) {
+>     throw new Error("Saldo Insuficiente: Recarregue sua carteira.");
+>   }
+>   return true; // "Happy Path"
+> }
+> ```
 
 </details>
 
 
 <details>
-  <summary><h3>❓ 4. O Poder do 'If/Else' (Controle de Fluxo)</h3></summary>
-  
-  > **Resposta Senior:**
-  > O `if/else` é a espinha dorsal da lógica de negócios. Ele direciona o comportamento do software baseando-se em estados.
-  >
-  > 💻 **Validação de Saldo (Clean Code):**
-  > ```javascript
-  > const validarTransacao = (saldo, aposta) => {
-  >   if (saldo < aposta) {
-  >     throw new Error("Saldo Insuficiente: Recarregue sua carteira.");
-  >   }
-  >   return true; // "Happy Path"
-  > }
-  > ```
+<summary><strong>❓ 5. Divisão por Zero & Tratamento de Erro</strong></summary>
+<br>
 
-</details>
-
-
-<details>
-  <summary><h3>❓ 5. Divisão por Zero & Tratamento de Erro</h3></summary>
-  
-  > **Resposta Senior:**
-  > Matematicamente indefinido, computacionalmente perigoso. Pode gerar `Infinity` (JS) ou `Exceptions` (Python/C#), quebrando a aplicação.
-  >
-  > 🛡️ **Defensive Programming:**
-  > Nunca confie em inputs externos.
-  > ```javascript
-  > function calcularProbabilidade(meusBilhetes, totalBilhetes) {
-  >   // Guard Clauese (Cláusula de Guarda)
-  >   if (totalBilhetes === 0) return 0; 
-  >   
-  >   return (meusBilhetes / totalBilhetes) * 100;
-  > }
-  > ```
+> **Resposta Senior:**
+> Matematicamente indefinido, computacionalmente perigoso. Pode gerar `Infinity` (JS) ou `Exceptions` (Python/C#), quebrando a aplicação.
+>
+> 🛡️ **Defensive Programming:**
+> Nunca confie em inputs externos.
+> ```javascript
+> function calcularProbabilidade(meusBilhetes, totalBilhetes) {
+>   // Guard Clauses (Cláusula de Guarda)
+>   if (totalBilhetes === 0) return 0; 
+>   
+>   return (meusBilhetes / totalBilhetes) * 100;
+> }
+> ```
 
 </details>
 
