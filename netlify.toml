@@ -1,0 +1,14 @@
+[build]
+  # Configuração para Monorepo: aponta para a pasta do Frontend
+  base = "apps/client"
+  publish = "dist"
+  command = "npm install && npm run build"
+
+[context.production.environment]
+  NODE_VERSION = "18"
+
+# Redirecionamento para SPA (React Router)
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

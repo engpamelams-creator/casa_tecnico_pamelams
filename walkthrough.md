@@ -40,9 +40,12 @@ python manage.py runserver
 
 ---
 
-## ☁️ Deployment (Render)
+## ☁️ Deployment (Render ou Netlify)
 
-Recomendamos o **Modo Serverless** para começar (Custo Zero).
+O projeto é "Cloud Agnostic". Você pode escolher:
+*   **Render:** Ótimo para Full Stack (Backend + Frontend).
+*   **Netlify:** Perfeito para o modo Serverless (Só Frontend).
+
 👉 **[Veja o Guia de Deploy (DEPLOY.md)](./DEPLOY.md)**.
 
 ---
@@ -53,4 +56,5 @@ Recomendamos o **Modo Serverless** para começar (Custo Zero).
 | :--- | :--- |
 | `apps/client` | Frontend React + Vite (Logica de Sorteio Serverless). |
 | `apps/server` | Backend Python + Django (Demonstração de Arquitetura). |
-| `render.yaml` | Infraestrutura como Código. |
+| `render.yaml` | Infraestrutura Render. |
+| `netlify.toml` | Infraestrutura Netlify. |
