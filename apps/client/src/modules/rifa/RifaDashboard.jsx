@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import confetti from 'canvas-confetti';
-import { Trophy, RotateCcw, Crown, Sparkles, LayoutDashboard, LogOut, History, Calendar, UserCircle, Settings, X } from 'lucide-react';
+import { Trophy, RotateCcw, Crown, Sparkles, LayoutDashboard, LogOut, History, Calendar, UserCircle, Settings, X, Dice1, Dice2, Dice3, Dice4, Dice5, Dice6 } from 'lucide-react';
 import { supabase } from '../../core/supabaseClient';
 import { useAudio } from '../../shared/hooks/useAudio';
 
@@ -99,6 +99,45 @@ const SettingsModal = ({ onClose, ticketCount, setTicketCount, prizeValue, setPr
     );
 };
 
+const FloatingDiceBackground = () => {
+    // Array of dice icons to randomly select from
+    const DiceIcons = [Dice1, Dice2, Dice3, Dice4, Dice5, Dice6];
+
+    // Generate 15 floating dice with random properties
+    const diceElements = Array.from({ length: 15 }).map((_, i) => {
+        const RandomDice = DiceIcons[Math.floor(Math.random() * DiceIcons.length)];
+        const left = Math.floor(Math.random() * 100) + '%';
+        const delay = Math.floor(Math.random() * 15) + 's';
+        const duration = Math.floor(Math.random() * 10) + 15 + 's'; // 15-25s duration
+        const size = Math.floor(Math.random() * 20) + 20 + 'px'; // 20-40px size
+
+        return (
+            <div
+                key={i}
+                className="absolute text-yellow-500/20 animate-float"
+                style={{
+                    left: left,
+                    animationDelay: delay,
+                    animationDuration: duration,
+                    fontSize: size,
+                    // If icons accept size prop or via css
+                    width: size,
+                    height: size
+                }}
+            >
+                <RandomDice size={size.replace('px', '')} />
+            </div>
+        );
+    });
+
+    return (
+        <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden bg-[#09090b]">
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-yellow-900/10 via-[#09090b] to-[#09090b]"></div>
+            {diceElements}
+        </div>
+    );
+};
+
 export default function RifaDashboard({ isAuthenticated, onRequestLogin, onLogout }) {
     const [showAdminPanel, setShowAdminPanel] = useState(false);
     const [showSettings, setShowSettings] = useState(false);
@@ -185,12 +224,8 @@ export default function RifaDashboard({ isAuthenticated, onRequestLogin, onLogou
     };
 
     return (
-        <div className="min-h-screen bg-[#09090b] text-white p-6 flex flex-col items-center justify-center font-sans relative overflow-hidden">
-            {/* 1. Background Animado Restaurado (Mais visível e Z-Index correto) */}
-            <div className="fixed inset-0 z-0 pointer-events-none">
-                <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-yellow-900/20 via-[#09090b] to-[#09090b]"></div>
-                <div className="absolute top-[-50%] left-[-50%] w-[200%] h-[200%] bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 animate-spin-slow"></div>
-            </div>
+        <div className="min-h-screen text-white p-6 flex flex-col items-center justify-center font-sans relative overflow-hidden">
+            <FloatingDiceBackground />
 
             {/* Version Indicator */}
             <div className="fixed bottom-2 right-2 text-[10px] text-zinc-800 font-mono z-50">v2.2 (Rifa Real)</div>

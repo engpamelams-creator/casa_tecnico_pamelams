@@ -18,6 +18,30 @@
     }
 }
 
+@keyframes floatUp {
+    0% {
+        transform: translateY(120vh) rotate(0deg) scale(0.8);
+        opacity: 0;
+    }
+
+    10% {
+        opacity: 0.8;
+    }
+
+    90% {
+        opacity: 0.8;
+    }
+
+    100% {
+        transform: translateY(-20vh) rotate(360deg) scale(0.8);
+        opacity: 0;
+    }
+}
+
+.animate-float {
+    animation: floatUp 15s linear infinite;
+}
+
 /* Base dark theme tweaks */
 body {
     background-color: #050505;
