@@ -25,8 +25,8 @@ O código já está configurado com:
 
 **Environment Variables (Variáveis de Ambiente):**
 1.  `DATABASE_URL`: **IMPORTANTE:** Use a conexão IPv4 (Supavisor) para o Render funcionar.
-    *   Formato: `postgresql://[USER].[PROJECT_REF]:[PASSWORD]@aws-0-sa-east-1.pooler.supabase.com:6543/postgres`
-    *   **Sua URL Pronta:** `postgresql://postgres.uqzkxtemxnwcoxswptaa:JasperSpencer1234%40@aws-0-sa-east-1.pooler.supabase.com:6543/postgres`
+    *   Formato: `postgresql://[USER].[PROJECT_REF]:[PASSWORD]@aws-0-us-east-2.pooler.supabase.com:5432/postgres`
+    *   **Sua URL Pronta:** `postgresql://postgres.uqzkxtemxnwcoxswptaa:JasperSpencer1234%40@aws-0-us-east-2.pooler.supabase.com:5432/postgres`
 2.  `SECRET_KEY`: (Gere uma chave aleatória)
 3.  `PYTHON_VERSION`: `3.9.0`
 4.  `RENDER`: `true`
