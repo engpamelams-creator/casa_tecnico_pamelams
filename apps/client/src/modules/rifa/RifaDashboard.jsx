@@ -4,6 +4,11 @@ import confetti from 'canvas-confetti';
 import { Trophy, RotateCcw, Crown, Sparkles, LayoutDashboard, LogOut, History, Calendar, UserCircle, Settings, X, Dice1, Dice2, Dice3, Dice4, Dice5, Dice6 } from 'lucide-react';
 import { supabase } from '../../core/supabaseClient';
 import { useAudio } from '../../shared/hooks/useAudio';
+import { useSpeech } from '../../shared/hooks/useSpeech';
+import { useAchievements } from '../../shared/context/AchievementsContext';
+import { ThemeToggle } from '../../shared/components/ThemeToggle';
+import { AchievementsButton } from '../../shared/components/AchievementsButton';
+
 
 const DashboardHistory = ({ onClose }) => {
     const [historyItems, setHistoryItems] = useState([]);
@@ -201,6 +206,9 @@ export default function RifaDashboard({ isAuthenticated, onRequestLogin, onLogou
 
     const playClickSound = useAudio('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
     const playWinSound = useAudio('https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3');
+    const { announceWinner } = useSpeech();
+    const { updateStats, checkPerfectSale } = useAchievements();
+
 
     // Realtime Subscription
     useEffect(() => {
@@ -224,6 +232,12 @@ export default function RifaDashboard({ isAuthenticated, onRequestLogin, onLogou
 
         return () => { supabase.removeChannel(rifaChannel); };
     }, []);
+
+    // Check for perfect sale achievement
+    useEffect(() => {
+        checkPerfectSale(soldTickets.length, ticketCount);
+    }, [soldTickets.length, ticketCount, checkPerfectSale]);
+
 
     const purchaseTicket = async (ticketNumber) => {
         if (soldTickets.includes(ticketNumber)) return;
@@ -269,6 +283,16 @@ export default function RifaDashboard({ isAuthenticated, onRequestLogin, onLogou
         setLastWinner({ number: winnerTicket, name: winnerName, prize: prizeValue });
         setIsDrawing(false);
         playWinSound();
+
+        // Announce winner with voice
+        announceWinner(winnerTicket, winnerName, prizeValue);
+
+        // Update achievements stats
+        updateStats({
+            totalDraws: (stats => stats.totalDraws + 1),
+            totalRevenue: (soldTickets.length * unitPrice)
+        });
+
         confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#FFD700', '#FFFFFF'] });
 
         await supabase.from('historico_vencedores').insert([{ numero_sorteado: winnerTicket, premio_valor: prizeValue }]);
@@ -283,6 +307,12 @@ export default function RifaDashboard({ isAuthenticated, onRequestLogin, onLogou
 
             {/* Top Navigation */}
             <div className="fixed top-6 right-6 z-40 flex gap-2">
+                {/* Theme Toggle */}
+                <ThemeToggle />
+
+                {/* Achievements Button */}
+                <AchievementsButton />
+
                 {/* Settings Button - Always Visible (Hybrid Mode) */}
                 <button onClick={() => setShowSettings(true)} className="flex items-center gap-2 px-3 py-2 bg-zinc-800 text-zinc-400 hover:text-white hover:bg-zinc-700 rounded-full transition-colors border border-white/5">
                     <Settings size={18} />
