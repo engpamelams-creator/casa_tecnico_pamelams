@@ -65,6 +65,15 @@ Sou **Desenvolvedora Full Stack** com uma bagagem única. Minha trajetória de 7
 
 ---
 
+### ⭐️ **Diferencial de Engenharia**
+
+> **A lógica de sorteio deste repositório foi construída para ambientes de missão crítica.**
+>
+> 1.  **Segurança Criptográfica:** Não utilizo geradores pseudo-aleatórios simples (como `Math.random`). Implementei **CSPRNG** (Cryptographically Secure Pseudo-Random Number Generator) via `crypto` (Node.js) e `secrets` (Python) para garantir a inviolabilidade dos sorteios.
+> 2.  **Concorrência & Atomicidade:** Para prevenir *Race Conditions* (como a venda dupla do mesmo bilhete), implementei validações atômicas e simulação de **Mutex/Locks** na camada de serviço.
+
+---
+
 ### ⚡ **Github Stats**
 
 <div align="center">
