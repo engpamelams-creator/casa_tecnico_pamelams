@@ -162,8 +162,7 @@ Teste_Tecnico_Pamela_Menezes/
 ## 💬 Suporte
 
 Dúvidas? Entre em contato:
-- **Email:** seu-email@exemplo.com
-- **GitHub Issues:** [Abrir issue](https://github.com/seu-usuario/Teste_Tecnico_Pamela_Menezes/issues)
+- **Email:** devpamela@gmail.com 
 
 ---
 
