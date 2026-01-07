@@ -1,6 +1,10 @@
 <div align="center">
   <img src="https://capsule-render.vercel.app/api?type=waving&color=0d1117&height=250&section=header&text=Pamela%20Menezes&fontSize=80&fontColor=ffffff&animation=fadeIn&fontAlignY=35&desc=Full%20Stack%20Developer%20%7C%20.NET%20%26%20Python%20%7C%20Neurodivergent%20Power%20%F0%9F%A7%A0&descAlignY=60&descAlign=50" width="100%" />
 </div>
+---
+<div align="center">
+  <sub>Last updated: 2026-01-07 • Project Version 2.0.1</sub>
+</div>
 
 <div align="center">
 
