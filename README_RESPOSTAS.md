@@ -23,7 +23,7 @@
 <summary><strong>❓ Explique com suas palavras: O que é uma variável em programação? Dê um exemplo prático relacionado a um jogo de cassino.</strong></summary>
 <br>
 
-> **Resposta Senior:**
+> **Resposta:**
 >
 > Uma variável é uma **alocação nomeada de memória** que armazena um valor mutável durante o ciclo de vida de uma aplicação. Em arquitetura de software, variáveis bem nomeadas são a base da documentação do código.
 >
@@ -36,7 +36,7 @@
 <summary><strong>❓ Qual a diferença entre uma função e um loop? Dê um exemplo de quando você usaria cada um em um sistema de rifa.</strong></summary>
 <br>
 
-> **Resposta Senior:**
+> **Resposta:**
 >
 > *   **Função (Encapsulamento):** É um bloco de lógica isolado projetado para realizar uma tarefa única e reutilizável. Promove o princípio DRY (Don't Repeat Yourself).
 > *   **Loop (Iteração):** É uma estrutura de controle de fluxo que repete instruções enquanto uma condição for verdadeira.
@@ -52,7 +52,7 @@
 <summary><strong>❓ Em um jogo do bicho, você precisa armazenar os resultados de 100 apostas. Qual estrutura de dados você usaria? Por quê?</strong></summary>
 <br>
 
-> **Resposta Senior:**
+> **Resposta:**
 >
 > A escolha ideal é um **Array de Objetos** (`List<Object>` ou `Dictionary` dependendo da busca).
 >
@@ -74,7 +74,7 @@
 <summary><strong>❓ Explique o que é um "if/else" e dê um exemplo prático: validar se um jogador tem saldo suficiente para fazer uma aposta.</strong></summary>
 <br>
 
-> **Resposta Senior:**
+> **Resposta:**
 > O `if/else` é a espinha dorsal da lógica de negócios. Ele direciona o comportamento do software baseando-se em estados.
 >
 > 💻 **Validação de Saldo (Clean Code):**
@@ -94,7 +94,7 @@
 <summary><strong>❓ O que acontece se você tentar dividir um número por zero em programação? Como você evitaria esse erro em um cálculo de probabilidade?</strong></summary>
 <br>
 
-> **Resposta Senior:**
+> **Resposta:**
 > Matematicamente indefinido, computacionalmente perigoso. Pode gerar `Infinity` (JS) ou `Exceptions` (Python/C#), quebrando a aplicação.
 >
 > 🛡️ **Defensive Programming:**
