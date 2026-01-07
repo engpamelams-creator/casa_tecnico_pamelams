@@ -5,6 +5,7 @@
 <div align="center">
 
   <h1>Dev Pamela M.S</h1>
+  <p>📍 São Bernardo do Campo - SP</p>
 
   [![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/dev-pamelams/)
   [![Website](https://img.shields.io/badge/Website-2ecc71?style=for-the-badge&logo=google-chrome&logoColor=white)](https://devpamelams.com.br/)
