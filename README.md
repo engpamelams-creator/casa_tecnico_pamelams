@@ -1,1 +1,84 @@
-Olá, sou a Pamela Menezes 👋🚀 Desenvolvedora Full Stack | .NET Core & Python | Mobile (Flutter & MAUI)"Transformo padrões complexos em arquiteturas robustas. Minha neurodivergência (TEA) é meu diferencial analítico."👩‍💻 Sobre MimMinha jornada na tecnologia não é linear, e esse é o meu maior trunfo. Sou uma Desenvolvedora Full Stack que une a precisão técnica da Engenharia de Software com a sensibilidade humana da Psicologia.O Diferencial Neurodivergente: Como mulher autista (PCD), aplico uma capacidade aguçada de hiperfoco e reconhecimento de padrões para construir códigos limpos e refinar a lógica de sistemas complexos.Background de Liderança: Antes do código, atuei por 7 anos como Psicóloga e Coordenadora, desenvolvendo uma comunicação assertiva e visão estratégica de negócios que hoje aplico na gestão de projetos e arquitetura de software.Atualmente, atuo como Freelancer desenvolvendo soluções de ponta a ponta (Web, Mobile e Desktop), focada em reduzir gargalos operacionais através de automações inteligentes.🛠 Tech Stack & EspecialidadesDomínioTecnologias & FerramentasBack-endC# (.NET 8/Core), Python (Django/FastAPI), Node.js (NestJS)Front-endReact.js, Angular, TypeScript, Tailwind CSSMobileFlutter, .NET MAUI, React NativeDados & AutomaçãoSQL Server, PostgreSQL, MongoDB, n8n, Power AutomateArquiteturaClean Architecture, DDD, MVC, Docker, Azure🏆 Projetos em DestaqueOrganiza IA: Plataforma de Gestão Financeira com C#/.NET 8 e React. Foco em arquitetura limpa e alta performance.Aurora Maps: Sistema Full Stack (Monorepo) de geolocalização utilizando Laravel e Python, com containerização Docker.Automações Inteligentes: Implementação de robôs que reduziram em ~30% o retrabalho manual em processos administrativos de clientes.📫 Vamos Conversar?Estou pronta para integrar times que buscam não apenas código, mas soluções estratégicas e diversidade cognitiva.🌐 Portfólio: devpamelams.com.br💼 LinkedIn: linkedin.com/in/dev-pamelams📧 E-mail: devpamelams@gmail.comOpen to work for Full Stack, .NET, and Python roles.
+<div align="center">
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=0d1117&height=250&section=header&text=Pamela%20Menezes&fontSize=80&fontColor=ffffff&animation=fadeIn&fontAlignY=35&desc=Full%20Stack%20Developer%20%7C%20.NET%20%26%20Python%20%7C%20Neurodivergent%20Power%20%F0%9F%A7%A0&descAlignY=60&descAlign=50" width="100%" />
+</div>
+
+<div align="center">
+
+  [![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/dev-pamelams/)
+  [![Website](https://img.shields.io/badge/Website-2ecc71?style=for-the-badge&logo=google-chrome&logoColor=white)](https://devpamelams.com.br/)
+  [![Gmail](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:devpamelams@gmail.com)
+
+</div>
+
+<br />
+
+<div align="center">
+  <img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&weight=600&size=24&pause=1000&color=A965F2&center=true&vCenter=true&width=500&lines=Coding+with+Purpose...;Building+Robust+Architectures...;Transforming+Complexity+into+Simplicity." alt="Typing SVG" />
+</div>
+
+---
+
+### 👩‍💻 **Sobre Mim (About Me)**
+
+> *"A tecnologia é a ferramenta, mas a psicologia humana é o manual de instruções."*
+
+Sou **Desenvolvedora Full Stack** com uma bagagem única. Minha trajetória de 7 anos como **Psicóloga** me deu uma visão privilegiada sobre comportamento e liderança, que hoje aplico na arquitetura de software e gestão de times.
+
+*   🧠 **Neurodivergência como Superpoder:** Minha mente autista (TEA) adora padrões. Uso meu hiperfoco para encontrar bugs invisíveis e arquitetar soluções escaláveis.
+*   🚀 **Foco em Resultados:** Crio automações que economizam tempo real e dinheiro para negócios, usando Python, .NET e estratégias de Cloud.
+
+---
+
+### 🛠 **Arsenal Tecnológico (Tech Stack)**
+
+<div align="center">
+  
+  **Core & Backend**
+  
+  <img src="https://skillicons.dev/icons?i=cs,dotnet,python,django,fastapi,nodejs,nestjs" />
+  
+  <br/><br/>
+  
+  **Frontend & Mobile**
+  
+  <img src="https://skillicons.dev/icons?i=react,ts,js,html,css,tailwind,flutter,dart,angular" />
+  
+  <br/><br/>
+  
+  **Data, Cloud & Tools**
+  
+  <img src="https://skillicons.dev/icons?i=postgres,mysql,mongodb,docker,azure,git,github,vscode,postman" />
+
+</div>
+
+---
+
+### 🏆 **Projetos em Destaque**
+
+| **Projeto** | **Tech Stack** | **Descrição** |
+|:---:|:---:|:---|
+| 💹 **[Organiza IA](https://github.com/engpamelams-creator/organiza_ai_projetoc-)** | `C#` `.NET 8` `React` | Plataforma financeira de alta performance com arquitetura limpa e análise de dados. |
+| 🌍 **[Aurora Maps](https://github.com/engpamelams-creator/Aurora_Maps_project)** | `Laravel` `Python` `Docker` | Sistema de geolocalização Full Stack em monorepo com microserviços. |
+| 🤖 **Bot Automator** | `Python` `Selenium` `RPA` | Robôs de automação que reduziram **30%** da carga operacional de clientes. |
+
+---
+
+### ⚡ **Github Stats**
+
+<div align="center">
+  <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
+    <img height="180em" src="https://github-readme-stats.vercel.app/api?username=engpamelams-creator&show_icons=true&theme=omni&include_all_commits=true&count_private=true&hide_border=true" />
+    <img height="180em" src="https://github-readme-stats.vercel.app/api/top-langs/?username=engpamelams-creator&layout=compact&theme=omni&hide_border=true" />
+  </div>
+  <br/>
+  <img src="https://github-readme-streak-stats.herokuapp.com/?user=engpamelams-creator&theme=omni&hide_border=true" alt="Streak" />
+</div>
+
+---
+
+<div align="center">
+  <br/>
+  <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExM2Q5Z2s1eDZ6eGV4ZGR4Z2Y5Z2s1eDZ6eGV4ZGR4Z2Y5Z2s1eDZ6eGV4ZC9lcD0xNV90cy9maWxlLmdpZg/qgQUggAC3Pfv687qPC/giphy.gif" width="100" />
+  <p><sub><i>"Code is poetry written with logic."</i> — Pamela Menezes</sub></p>
+  <br/>
+</div>
