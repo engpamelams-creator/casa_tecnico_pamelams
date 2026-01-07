@@ -178,14 +178,14 @@ export default function RifaDashboard({ isAuthenticated, onRequestLogin, onLogou
                         </div>
                         <div>
                             <h1 className="text-3xl font-bold tracking-tight text-white">ROYAL <span className="text-yellow-400">RIFA</span></h1>
-                            <p className="text-zinc-500 text-xs uppercase tracking-[0.3em] mt-1 font-medium">Enterprise System</p>
+                            <p className="text-zinc-500 text-xs uppercase tracking-[0.3em] mt-1 font-medium">SISTEMA ABERTO</p>
                         </div>
                     </div>
 
                     <div className="flex flex-wrap gap-4 mt-6 md:mt-0 items-end justify-end">
                         {isAuthenticated && (
                             <div className="bg-black/20 p-4 rounded-xl border border-white/5 text-right w-32">
-                                <p className="text-xs text-zinc-500 uppercase mb-1">Qtd. Números</p>
+                                <p className="text-xs text-zinc-500 uppercase mb-1">CONFIG. NÚMEROS</p>
                                 <input
                                     type="number"
                                     value={ticketCount}
@@ -196,7 +196,7 @@ export default function RifaDashboard({ isAuthenticated, onRequestLogin, onLogou
                         )}
 
                         <div className="bg-black/20 p-4 rounded-xl border border-white/5 text-right">
-                            <p className="text-xs text-zinc-500 uppercase mb-1">Prêmio Estimado</p>
+                            <p className="text-xs text-zinc-500 uppercase mb-1">PRÊMIO ATUAL</p>
                             {isAuthenticated ? (
                                 <div className="flex items-center justify-end gap-1 text-yellow-400 font-bold text-xl">
                                     R$ <input type="number" value={prizeValue} onChange={e => setPrizeValue(Number(e.target.value))} className="bg-transparent w-24 text-right focus:outline-none border-b border-yellow-500/50 focus:border-yellow-500" />
@@ -207,7 +207,7 @@ export default function RifaDashboard({ isAuthenticated, onRequestLogin, onLogou
                         </div>
 
                         <div className="bg-black/20 p-4 rounded-xl border border-white/5 text-right">
-                            <p className="text-xs text-zinc-500 uppercase">Disponibilidade</p>
+                            <p className="text-xs text-zinc-500 uppercase mb-1">BILHETES</p>
                             <p className="text-xl font-mono font-bold text-white">{soldTickets.length}/{ticketCount}</p>
                         </div>
                     </div>
