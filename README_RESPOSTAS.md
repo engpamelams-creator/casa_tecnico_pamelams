@@ -15,12 +15,12 @@
 
 ---
 
-## 🧠 Parte 1: Domínio Teórico (Deep Learning)
+## 🧠 Parte 1: Questões Teóricas
 
 > *Clique nas perguntas abaixo para revelar as respostas.*
 
 <details>
-<summary><strong>❓ 1. O que é uma variável? (Conceito & Analogia)</strong></summary>
+<summary><strong>❓ Explique com suas palavras: O que é uma variável em programação? Dê um exemplo prático relacionado a um jogo de cassino.</strong></summary>
 <br>
 
 > **Resposta Senior:**
@@ -33,7 +33,7 @@
 </details>
 
 <details>
-<summary><strong>❓ 2. Função vs. Loop (Quando usar?)</strong></summary>
+<summary><strong>❓ Qual a diferença entre uma função e um loop? Dê um exemplo de quando você usaria cada um em um sistema de rifa.</strong></summary>
 <br>
 
 > **Resposta Senior:**
@@ -49,7 +49,7 @@
 
 
 <details>
-<summary><strong>❓ 3. Estrutura de Dados para Jogo do Bicho</strong></summary>
+<summary><strong>❓ Em um jogo do bicho, você precisa armazenar os resultados de 100 apostas. Qual estrutura de dados você usaria? Por quê?</strong></summary>
 <br>
 
 > **Resposta Senior:**
@@ -71,7 +71,7 @@
 
 
 <details>
-<summary><strong>❓ 4. O Poder do 'If/Else' (Controle de Fluxo)</strong></summary>
+<summary><strong>❓ Explique o que é um "if/else" e dê um exemplo prático: validar se um jogador tem saldo suficiente para fazer uma aposta.</strong></summary>
 <br>
 
 > **Resposta Senior:**
@@ -91,7 +91,7 @@
 
 
 <details>
-<summary><strong>❓ 5. Divisão por Zero & Tratamento de Erro</strong></summary>
+<summary><strong>❓ O que acontece se você tentar dividir um número por zero em programação? Como você evitaria esse erro em um cálculo de probabilidade?</strong></summary>
 <br>
 
 > **Resposta Senior:**
