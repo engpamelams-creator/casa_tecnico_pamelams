@@ -73,3 +73,31 @@ Para elevar este projeto a um nível Enterprise, os próximos passos seriam:
 <div align="center">
   <sub>Documentação gerada com rigor técnico por <strong>Dev Pamela M.S</strong></sub>
 </div>
+
+---
+
+## 🛡️ Qualidade e Testes (QA)
+
+Para garantir a robustez da aplicação, implementei uma suíte de testes automatizados cobrindo cenários críticos e bordas (Edge Cases). A estratégia de testes foca no "Caminho Feliz" (Happy Path) e tentativas de violação de regras de negócio.
+
+### 🧪 Javascript (Jest)
+Testes unitários focados na **regras de negócio do Singleton** e **Concorrência**:
+*   ✅ **Validação de Compra:** Garante que vendas válidas sejam registradas.
+*   🚫 **Prevenção de Duplicidade:** Simula condições de corrida para impedir venda dupla.
+*   🎲 **Integridade do Sorteio:** Verifica se o ganhador é válido e da lista correta.
+*   ⚠️ **Fail Fast:** Validações de limites (números negativos, fora do range).
+
+### 🐍 Python (Pytest)
+Testes de **Lógica de Backend** e **Segurança**:
+*   🔒 **Type Safety:** Validação dos contratos de dados via Dataclasses.
+*   🔐 **CSPRNG Verification:** Garante que o sorteio utiliza a entropia segura.
+*   🛡️ **Imutabilidade:** Testes de borda para garantir que a Rifa não aceita modificações após fechada.
+
+### Como rodar os testes
+```bash
+# Frontend & Core Logic (JS)
+npx jest
+
+# Backend Logic (Python)
+python -m pytest
+```
