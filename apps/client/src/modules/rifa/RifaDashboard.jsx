@@ -140,8 +140,13 @@ export default function RifaDashboard({ isAuthenticated, onRequestLogin, onLogou
 
     return (
         <div className="min-h-screen bg-[#09090b] text-white p-6 flex flex-col items-center justify-center font-sans relative overflow-hidden">
-            {/* Background noise effect (Now consistent with Login) */}
-            <div className="absolute top-[-50%] left-[-50%] w-[200%] h-[200%] bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5 animate-spin-slow pointer-events-none"></div>
+            {/* Background noise effect (CSS Radial Gradient - Network Safe) */}
+            <div className="absolute inset-0 z-0 opacity-20 pointer-events-none animate-spin-slow" style={{
+                background: 'radial-gradient(circle at 50% 50%, rgba(234, 179, 8, 0.15) 0%, transparent 50%), repeating-linear-gradient(45deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 10px)'
+            }}></div>
+
+            {/* Version Indicator */}
+            <div className="fixed bottom-2 right-2 text-[10px] text-zinc-800 font-mono z-50">v2.1 (Live)</div>
 
             {/* Top Navigation */}
             <div className="fixed top-6 right-6 z-40 flex gap-2">
@@ -179,13 +184,13 @@ export default function RifaDashboard({ isAuthenticated, onRequestLogin, onLogou
 
                     <div className="flex flex-wrap gap-4 mt-6 md:mt-0 items-end justify-end">
                         {isAuthenticated && (
-                            <div className="bg-black/20 p-4 rounded-xl border border-white/5 text-right">
+                            <div className="bg-black/20 p-4 rounded-xl border border-white/5 text-right w-32">
                                 <p className="text-xs text-zinc-500 uppercase mb-1">Qtd. Números</p>
                                 <input
                                     type="number"
                                     value={ticketCount}
                                     onChange={e => setTicketCount(Number(e.target.value))}
-                                    className="bg-transparent w-full text-right font-mono font-bold text-white focus:outline-none border-b border-white/20 focus:border-yellow-500"
+                                    className="bg-transparent w-full text-right font-mono font-bold text-white focus:outline-none border-b border-white/20 focus:border-yellow-500 transition-colors"
                                 />
                             </div>
                         )}
