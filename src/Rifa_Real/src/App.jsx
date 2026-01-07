@@ -1,236 +1,213 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import confetti from 'canvas-confetti';
-import { Trophy, Dna, RotateCcw, Coins, Crown, Sparkles, Share2, Dice5, Dice3, Copy } from 'lucide-react';
+import { supabase } from './supabaseClient'; // Importe seu cliente aqui
+import { Trophy, RotateCcw, Crown, Sparkles, Volume2, VolumeX, Wifi, WifiOff } from 'lucide-react';
 
-// --- Componente de Fundo Animado (Dados Flutuantes) ---
-const BackgroundDice = () => {
-  // Cria 15 elementos flutuantes aleatórios
-  const floatingElements = Array.from({ length: 15 }).map((_, i) => ({
-    id: i,
-    x: Math.random() * 100, // Posição inicial X
-    y: Math.random() * 100, // Posição inicial Y
-    duration: Math.random() * 20 + 10, // Duração lenta (10s a 30s)
-    scale: Math.random() * 0.5 + 0.5, // Tamanho variado
-    Icon: i % 2 === 0 ? Dice5 : Dice3 // Alterna entre dados
-  }));
-
-  return (
-    <div className="fixed inset-0 overflow-hidden pointer-events-none -z-10 bg-gradient-to-br from-gray-900 via-black to-gray-900">
-      {/* Camada de Névoa Dourada */}
-      <div className="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5" />
-
-      {floatingElements.map((el) => (
-        <motion.div
-          key={el.id}
-          initial={{ x: `${el.x}vw`, y: `${el.y}vh`, opacity: 0 }}
-          animate={{
-            x: [`${el.x}vw`, `${(el.x + 50) % 100}vw`, `${el.x}vw`], // Move de um lado pro outro
-            y: [`${el.y}vh`, `${(el.y + 50) % 100}vh`, `${el.y}vh`], // Move cima/baixo
-            rotate: [0, 360], // Gira
-            opacity: [0.1, 0.3, 0.1] // Pisca suavemente
-          }}
-          transition={{
-            duration: el.duration,
-            repeat: Infinity,
-            ease: "linear"
-          }}
-          className="absolute text-yellow-600/20"
-          style={{ scale: el.scale }}
-        >
-          <el.Icon size={64} />
-        </motion.div>
-      ))}
-    </div>
-  );
+// ... (Mantenha o hook useAudio e componentes StatBox igual ao anterior) ...
+const useAudio = (url) => {
+  const audio = useRef(new Audio(url));
+  const play = () => { audio.current.currentTime = 0; audio.current.play().catch(e => { }); };
+  return play;
 };
 
-// --- Componente Principal ---
-export default function RifaCasinoSocial() {
+export default function RifaSupabaseRealtime() {
   const TOTAL_BILHETES = 50;
+
+  // Estados
   const [bilhetesVendidos, setBilhetesVendidos] = useState([]);
-  const [ultimoGanhador, setUltimoGanhador] = useState(null);
+  const [isConnected, setIsConnected] = useState(false); // Status da conexão
   const [isSorteando, setIsSorteando] = useState(false);
+  const [ultimoGanhador, setUltimoGanhador] = useState(null);
 
-  // Função para compartilhar
-  const shareResult = (platform) => {
-    const text = `Acabei de ganhar no Sorteio Royal com o número ${ultimoGanhador}! 🏆 Venha participar!`;
-    const url = "https://meu-projeto-rifa.com"; // Seu link aqui
+  // Sons
+  const playClick = useAudio('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+  const playWin = useAudio('https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3');
 
-    if (platform === 'whatsapp') {
-      window.open(`https://wa.me/?text=${encodeURIComponent(text + " " + url)}`, '_blank');
-    } else if (platform === 'facebook') {
-      window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, '_blank');
+  // --- 1. CARREGAMENTO INICIAL E REALTIME (A Mágica) ---
+  useEffect(() => {
+    // A. Busca dados iniciais do banco
+    const fetchBilhetes = async () => {
+      const { data, error } = await supabase.from('bilhetes').select('numero');
+      if (!error && data) {
+        setBilhetesVendidos(data.map(b => b.numero));
+        setIsConnected(true);
+      }
+    };
+
+    fetchBilhetes();
+
+    // B. Abre o "Canal de Escuta" (Websocket)
+    const channel = supabase
+      .channel('rifa-realtime')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'bilhetes' }, (payload) => {
+        // Quando ALGUÉM (qualquer lugar do mundo) comprar, atualiza aqui:
+        setBilhetesVendidos((prev) => [...prev, payload.new.numero]);
+        playClick(); // Toca som quando alguém compra
+      })
+      .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'bilhetes' }, (payload) => {
+        // Se reiniciar a rifa
+        setBilhetesVendidos((prev) => prev.filter(n => n !== payload.old.numero));
+      })
+      .subscribe((status) => {
+        if (status === 'SUBSCRIBED') setIsConnected(true);
+      });
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
+
+  // --- 2. Lógica de Venda (Envia pro Banco) ---
+  const handleToggleBilhete = async (numero) => {
+    if (isSorteando) return;
+
+    if (bilhetesVendidos.includes(numero)) {
+      alert("Este bilhete já foi comprado por outro jogador!");
+      return;
+    }
+
+    // Tenta inserir no Supabase
+    // O banco vai garantir que não haja duplicidade (Constraint UNIQUE)
+    const { error } = await supabase
+      .from('bilhetes')
+      .insert([{ numero: numero }]);
+
+    if (error) {
+      alert("Erro ao comprar: Talvez alguém tenha clicado antes de você!");
     } else {
-      // Instagram/TikTok não permitem share direto de texto via web, copiamos para o clipboard
-      navigator.clipboard.writeText(`${text} ${url}`);
-      alert("Texto copiado! Cole no seu Instagram ou TikTok.");
+      // Não precisamos fazer setBilhetesVendidos aqui
+      // O Realtime (useEffect) vai receber o aviso e atualizar a tela!
     }
   };
 
-  const triggerLuxuryWin = () => {
-    const duration = 3000;
-    const end = Date.now() + duration;
-    (function frame() {
-      confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#FFD700', '#FFFFFF'] });
-      confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#FFD700', '#FFFFFF'] });
-      if (Date.now() < end) requestAnimationFrame(frame);
-    }());
-  };
-
-  const handleToggleBilhete = (numero) => {
-    if (ultimoGanhador || isSorteando) return;
-    if (bilhetesVendidos.includes(numero)) {
-      setBilhetesVendidos(prev => prev.filter(n => n !== numero));
-    } else {
-      setBilhetesVendidos(prev => [...prev, numero]);
+  // --- 3. Lógica de Reset (Limpa o Banco) ---
+  const resetar = async () => {
+    const { error } = await supabase.from('bilhetes').delete().neq('id', 0); // Deleta tudo
+    if (!error) {
+      setUltimoGanhador(null);
+      // O Realtime vai limpar a tela automaticamente
     }
   };
 
   const handleSortear = async () => {
     if (bilhetesVendidos.length === 0) return;
     setIsSorteando(true);
-    setUltimoGanhador(null);
-    await new Promise(resolve => setTimeout(resolve, 2500));
+
+    // Suspense
+    await new Promise(resolve => setTimeout(resolve, 3000));
+
+    // Sorteio Local (Para demonstração visual)
+    // Num cenário 100% Sênior, isso seria uma Edge Function no Supabase
     const ganhador = bilhetesVendidos[Math.floor(Math.random() * bilhetesVendidos.length)];
+
     setUltimoGanhador(ganhador);
     setIsSorteando(false);
-    triggerLuxuryWin();
-  };
-
-  const resetar = () => {
-    setBilhetesVendidos([]);
-    setUltimoGanhador(null);
-    setIsSorteando(false);
+    playWin();
+    confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#FFD700', '#FFFFFF'] });
   };
 
   return (
-    <div className="min-h-screen text-white p-6 flex flex-col items-center justify-center relative overflow-hidden font-sans">
+    <div className="min-h-screen bg-[#09090b] text-white p-6 flex flex-col items-center justify-center font-sans selection:bg-yellow-500 selection:text-black">
 
-      {/* 1. O Fundo Animado (Novo!) */}
-      <BackgroundDice />
+      {/* Indicador de Conexão Realtime */}
+      <div className="fixed top-6 right-6 z-50 flex items-center gap-2 bg-black/40 px-3 py-1 rounded-full border border-white/10 backdrop-blur-md">
+        {isConnected ? <Wifi size={16} className="text-green-500" /> : <WifiOff size={16} className="text-red-500" />}
+        <span className="text-xs font-mono text-zinc-400">{isConnected ? 'LIVE SYNC' : 'OFFLINE'}</span>
+      </div>
 
-      {/* Container Principal (Glassmorphism) */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="w-full max-w-5xl bg-black/40 backdrop-blur-xl border border-white/10 rounded-3xl p-8 shadow-2xl relative z-10"
-      >
+      <motion.div className="w-full max-w-5xl bg-zinc-900/60 backdrop-blur-2xl border border-white/5 rounded-3xl p-8 shadow-2xl relative">
+
         {/* Header */}
         <header className="flex flex-col md:flex-row justify-between items-center mb-8 border-b border-white/5 pb-6">
-          <div className="flex items-center gap-3">
-            <div className="p-3 bg-yellow-500 rounded-xl shadow-[0_0_20px_rgba(234,179,8,0.4)]">
+          <div className="flex items-center gap-4">
+            <div className="p-4 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-2xl shadow-lg shadow-yellow-500/20">
               <Crown className="text-black w-8 h-8" />
             </div>
             <div>
-              <h1 className="text-3xl font-bold tracking-tight text-white">ROYAL <span className="text-yellow-400">RIFA</span></h1>
-              <p className="text-gray-400 text-xs uppercase tracking-widest mt-1">Sorteio Premium</p>
+              <h1 className="text-3xl font-bold tracking-tight text-white">SUPABASE <span className="text-yellow-400">MULTIPLAYER</span></h1>
+              <p className="text-zinc-500 text-xs uppercase tracking-[0.3em] mt-1 font-medium">PostgreSQL Realtime Rifa</p>
             </div>
           </div>
-          <div className="flex gap-6 mt-4 md:mt-0">
-            <StatsDisplay label="Apostas" value={bilhetesVendidos.length} icon={<Dna size={14} />} />
-            <StatsDisplay label="Prêmio" value={`R$ ${bilhetesVendidos.length * 50}`} icon={<Coins size={14} />} isGold />
+
+          <div className="text-right">
+            <p className="text-xs text-zinc-500 uppercase tracking-wider mb-1">Bilhetes Vendidos</p>
+            <p className="text-2xl font-mono font-bold text-yellow-400">{bilhetesVendidos.length} / {TOTAL_BILHETES}</p>
           </div>
         </header>
 
-        {/* Grade de Números */}
-        <div className="grid grid-cols-5 sm:grid-cols-10 gap-3 mb-8">
+        {/* Grid de Bilhetes */}
+        <div className="grid grid-cols-5 sm:grid-cols-10 gap-3 mb-10">
           {Array.from({ length: TOTAL_BILHETES }, (_, i) => i + 1).map((num) => {
             const isSelected = bilhetesVendidos.includes(num);
             const isWinner = ultimoGanhador === num;
+
             return (
               <motion.button
                 key={num}
                 onClick={() => handleToggleBilhete(num)}
-                disabled={isSorteando || ultimoGanhador}
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-                className={`h-12 rounded-lg font-bold transition-all border ${isWinner ? 'bg-yellow-500 text-black border-yellow-300 shadow-[0_0_20px_#eab308]' :
-                  isSelected ? 'bg-yellow-900/80 text-white border-yellow-600' :
-                    'bg-white/5 text-gray-500 border-transparent hover:bg-white/10'
-                  }`}
+                disabled={isSorteando || isSelected || ultimoGanhador}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className={`
+                  h-14 rounded-lg font-bold text-lg transition-all border relative overflow-hidden group
+                  ${isWinner
+                    ? 'bg-yellow-400 text-black border-yellow-400 shadow-[0_0_30px_rgba(250,204,21,0.5)] z-10 scale-110'
+                    : isSelected
+                      ? 'bg-zinc-800 text-zinc-500 border-zinc-700 cursor-not-allowed opacity-60' // Estilo de "Já comprado"
+                      : 'bg-zinc-800/50 text-zinc-400 border-zinc-700/50 hover:border-yellow-500/50 hover:text-yellow-100 hover:bg-yellow-900/20'
+                  }
+                `}
               >
                 {num}
+                {isSelected && !isWinner && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/40">
+                    <span className="text-[10px] uppercase tracking-widest text-zinc-500 font-black rotate-[-15deg]">Vendido</span>
+                  </div>
+                )}
               </motion.button>
             );
           })}
         </div>
 
-        {/* Ações */}
-        <div className="flex justify-between items-center pt-4 border-t border-white/10">
-          <span className="text-gray-500 text-sm hidden sm:block">Selecione os números para apostar</span>
+        {/* Footer Actions */}
+        <div className="flex justify-between items-center pt-6 border-t border-white/5">
+          <div className="flex gap-2 items-center text-xs text-zinc-600">
+            <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+            Database Connected
+          </div>
 
-          <div className="flex gap-3 w-full sm:w-auto justify-end">
+          <div className="flex gap-3">
             {ultimoGanhador && (
-              <button onClick={resetar} className="px-4 py-3 rounded-xl border border-white/10 text-gray-400 hover:text-white flex gap-2">
-                <RotateCcw size={18} /> Reiniciar
+              <button onClick={resetar} className="px-6 py-3 rounded-xl border border-white/10 text-zinc-400 hover:text-white flex items-center gap-2">
+                <RotateCcw size={18} /> Resetar Banco
               </button>
             )}
             <button
               onClick={handleSortear}
-              disabled={bilhetesVendidos.length === 0 || isSorteando || ultimoGanhador}
-              className={`px-8 py-3 rounded-xl font-bold text-black flex gap-2 shadow-lg transition-all ${bilhetesVendidos.length === 0 ? 'bg-gray-700 cursor-not-allowed text-gray-500' : 'bg-gradient-to-r from-yellow-400 to-yellow-600 hover:scale-105'
-                }`}
+              disabled={bilhetesVendidos.length === 0 || isSorteando}
+              className="px-8 py-3 rounded-xl font-bold bg-yellow-500 text-black hover:bg-yellow-400 transition-colors shadow-lg shadow-yellow-500/10"
             >
-              {isSorteando ? <span key="spin"><Sparkles className="animate-spin" /></span> : <span key="trophy"><Trophy /></span>}
-              {isSorteando ? <span key="text-sq">SORTEANDO...</span> : <span key="text-sr">SORTEAR AGORA</span>}
+              {isSorteando ? 'Sorteando...' : 'Sortear Agora'}
             </button>
           </div>
         </div>
+
       </motion.div>
 
-      {/* Modal de Vitória com Redes Sociais */}
+      {/* Modal de Vitória */}
       <AnimatePresence>
         {ultimoGanhador && (
-          <motion.div
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm p-4"
-          >
-            <motion.div
-              initial={{ scale: 0.5, y: 50 }} animate={{ scale: 1, y: 0 }}
-              className="bg-gray-900 border border-yellow-500/30 p-8 rounded-3xl text-center max-w-md w-full relative"
-            >
-              <div className="inline-block p-4 rounded-full bg-yellow-500/20 mb-4 text-yellow-500 animate-bounce">
-                <Trophy size={48} />
-              </div>
-              <h2 className="text-gray-400 uppercase tracking-widest text-sm">Vencedor</h2>
-              <div className="text-8xl font-black text-transparent bg-clip-text bg-gradient-to-b from-yellow-200 to-yellow-600 mb-6">
-                {ultimoGanhador}
-              </div>
-
-              {/* Botões de Social Media */}
-              <div className="bg-white/5 rounded-xl p-4 mb-6">
-                <p className="text-sm text-gray-400 mb-3 flex items-center justify-center gap-2">
-                  <Share2 size={14} /> Compartilhar Resultado
-                </p>
-                <div className="flex justify-center gap-4">
-                  <SocialButton color="bg-green-600" label="WhatsApp" onClick={() => shareResult('whatsapp')} />
-                  <SocialButton color="bg-blue-600" label="Facebook" onClick={() => shareResult('facebook')} />
-                  <SocialButton color="bg-pink-600" label="Insta/TikTok" onClick={() => shareResult('copy')} icon={<Copy size={16} />} />
-                </div>
-              </div>
-
-              <button onClick={() => setUltimoGanhador(null)} className="text-yellow-500 text-sm font-bold hover:underline">
-                FECHAR
-              </button>
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-md">
+            <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="text-center">
+              <h2 className="text-yellow-500 text-2xl font-bold mb-4">VENCEDOR</h2>
+              <div className="text-9xl font-black text-white">{ultimoGanhador}</div>
+              <button onClick={() => setUltimoGanhador(null)} className="mt-8 text-zinc-500 hover:text-white underline">Fechar</button>
             </motion.div>
-          </motion.div>
+          </div>
         )}
       </AnimatePresence>
+
     </div>
   );
 }
-
-// Componentes Auxiliares
-const StatsDisplay = ({ label, value, icon, isGold }) => (
-  <div className="text-right">
-    <div className="flex items-center justify-end gap-1 text-xs text-gray-500 uppercase">{label} {icon}</div>
-    <div className={`text-xl font-bold ${isGold ? 'text-yellow-400' : 'text-white'}`}>{value}</div>
-  </div>
-);
-
-const SocialButton = ({ color, label, onClick, icon }) => (
-  <button onClick={onClick} className={`${color} w-10 h-10 rounded-full flex items-center justify-center text-white hover:scale-110 transition-transform shadow-lg`} title={label}>
-    {icon || label[0]}
-  </button>
-);
