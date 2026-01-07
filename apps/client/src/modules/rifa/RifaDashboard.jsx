@@ -126,8 +126,11 @@ export default function RifaDashboard({ isAuthenticated, onRequestLogin, onLogou
         // Suspense effect
         await new Promise(resolve => setTimeout(resolve, 3000));
 
-        // Using simple random for the frontend visual. Ideally, this should be an Edge Function call to get a secure random number.
-        const winnerTicket = soldTickets[Math.floor(Math.random() * soldTickets.length)];
+        // Secure Random using browser Crypto API (Serverless & Secure)
+        const array = new Uint32Array(1);
+        window.crypto.getRandomValues(array);
+        const randomIndex = array[0] % soldTickets.length;
+        const winnerTicket = soldTickets[randomIndex];
 
         setLastWinner(winnerTicket);
         setIsDrawing(false);

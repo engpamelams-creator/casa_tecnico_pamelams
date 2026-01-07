@@ -1,21 +1,22 @@
 # 🏆 Rifa Real - Project Walkthrough
 
-O **Rifa Real** é uma plataforma de gestão de sorteios "Enterprise-Grade", estruturada como um Monorepo Modular.
+O **Rifa Real** é um sistema moderno de gestão de sorteios.
+Ele opera em modo híbrido: pode rodar **100% Serverless** (apenas Frontend) ou **Full Stack** (com Django).
 
 ## ✨ Principais Funcionalidades
 
 ### 1. 🌍 Multiplayer em Tempo Real (Supabase)
-Sincronização instantânea via WebSockets.
-*   **Live Sync:** Bloqueio de bilhetes em tempo real.
-*   **Event-Driven:** O frontend reage a eventos do banco de dados.
+*   **Live Sync:** O frontend conecta diretamente ao banco de dados via WebSockets.
+*   **Serverless Crypto:** O sorteio usa `window.crypto` (segurança militar) rodando direto no navegador, sem precisar de backend.
 
-### 2. 🔐 Autenticação Híbrida
-*   **Acesso Público:** High Availability para usuários finais.
-*   **Admin Seguro:** Área protegida para gestão (TechLead Access).
+### 2. 🔐 Autenticação & Admin
+*   **Acesso Público:** Aberto para todos comprarem.
+*   **Admin Seguro:** Área protegida para resetar sorteios e ver ganhadores.
 
-### 3. 🛡️ Backend & Infra
+### 3. 🛡️ Backend & Infra (Architecture Demo)
+Mantivemos o código Python (`apps/server`) no repositório para demonstrar arquitetura robusta:
 *   **Django API:** Proteção contra Race Conditions (`select_for_update`).
-*   **Modular Architecture:** Código organizado em `apps/client` e `apps/server`.
+*   **Monorepo:** Organização profissional de pastas.
 
 ![Login Screen](/login_page_view_1767813599824.png)
 
@@ -23,15 +24,15 @@ Sincronização instantânea via WebSockets.
 
 ## 🚀 Como Rodar Localmente
 
-### Frontend (Client)
+### Opção A: Apenas Frontend (Rápido)
 ```bash
 cd apps/client
 npm install
 npm run dev
 ```
-Acesse: `http://localhost:5173`
+O sistema funcionará 100% (Sorteio, Login, Realtime).
 
-### Backend (Server)
+### Opção B: Backend Django (Opcional)
 ```bash
 cd apps/server/api
 python manage.py runserver
@@ -41,8 +42,8 @@ python manage.py runserver
 
 ## ☁️ Deployment (Render)
 
-Preparamos o projeto para deploy automático no **Render**.
-👉 **[Veja o Guia de Deploy (DEPLOY.md)](./DEPLOY.md)** para colocar o sistema no ar em 5 minutos.
+Recomendamos o **Modo Serverless** para começar (Custo Zero).
+👉 **[Veja o Guia de Deploy (DEPLOY.md)](./DEPLOY.md)**.
 
 ---
 
@@ -50,6 +51,6 @@ Preparamos o projeto para deploy automático no **Render**.
 
 | Pasta | Descrição |
 | :--- | :--- |
-| `apps/client` | Frontend React + Vite (Modularizado). |
-| `apps/server` | Backend Python + Django + Scripts de Build. |
-| `infra` | Configurações de Banco de Dados. |
+| `apps/client` | Frontend React + Vite (Logica de Sorteio Serverless). |
+| `apps/server` | Backend Python + Django (Demonstração de Arquitetura). |
+| `render.yaml` | Infraestrutura como Código. |

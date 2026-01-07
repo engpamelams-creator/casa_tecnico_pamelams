@@ -14,12 +14,12 @@
 
 ## 🏗️ Como pensei na Arquitetura
 
-Decidi organizar o projeto de um jeito que fosse organizado, mas sem complicar demais. Em vez de criar vários lugares diferentes para código, coloquei tudo junto num projeto só, mas bem separado por responsabilidade.
+Decidi organizar o projeto de um jeito que permitisse duas formas de rodar: **Simples** (só Frontend) ou **Completa** (com Backend Python).
 
-Basicamente, o sistema funciona em três partes que conversam entre si:
+O projeto é um **Monorepo**, o que significa que colei Frontend e Backend na mesma casa, mas em quartos separados. Isso facilita para quem vai analisar o código ver tudo de uma vez.
 
 1.  **O que o usuário vê (Frontend):** A tela bonita onde as pessoas compram números.
-2.  **O cérebro (Backend):** Onde ficam as regras de segurança e o sorteio.
+2.  **O cérebro (Backend):** O código Python robusto que serve como auditoria e "fonte da verdade".
 3.  **O cofre (Banco de Dados):** Onde guardamos os bilhetes vendidos e os ganhadores.
 
 ---
@@ -27,15 +27,17 @@ Basicamente, o sistema funciona em três partes que conversam entre si:
 ## 🛠️ Tecnologias que escolhi (e o porquê)
 
 ### 1. Frontend: React + Vite
-Escolhi o **React** porque é a tecnologia mais moderna hoje para criar telas que não travam. O **Vite** foi para deixar o projeto leve e rápido de rodar.
-*   **O "Pulo do Gato":** Usei uma tecnologia de **Tempo Real** (WebSockets). Isso significa que, se você comprar o número 10 agora, ele fica vermelho na tela de todo mundo que estiver no site na mesma hora. Parece mágica, mas é tecnologia.
+Escolhi o **React** porque é a tecnologia padrão de mercado. O **Vite** garante que o projeto rode rápido em qualquer máquina.
+*   **Interatividade:** Usei uma tecnologia de **Tempo Real** (WebSockets). Sabe quando alguém compra um bilhete e ele fica bloqueado pra todos na hora? É isso.
+*   **Segurança no Navegador:** Para o modo "Serverless", implementei o sorteio usando `window.crypto`. É muito mais seguro que o `Math.random` comum e garante que o sorteio seja justo mesmo sem o servidor Python ligado.
 
 ### 2. Backend: Python com Django
-Para garantir que o sorteio seja sério, não confiei apenas no navegador. Mantive uma camada segura em **Python**. O **Django** é muito robusto e me ajuda a garantir que as regras sejam seguidas.
-*   **Sem Confusão:** Usei um sistema de travas no banco de dados. Isso impede aquele erro chato de duas pessoas clicarem no mesmo número ao mesmo tempo e o sistema vender duplicado. Aqui, o primeiro leva e o segundo é avisado.
+Mantive uma estrutura completa em Python na pasta `apps/server`.
+*   **Por que ele está lá?** Mesmo que o Frontend consiga rodar sozinho hoje, deixei o Backend pronto para mostrar que sei construir APIs robustas. Ele tem travas de banco de dados (`select_for_update`) para evitar erros em grandes escalas.
+*   **Flexibilidade:** O recrutador pode ver que pensei tanto na solução rápida (Frontend Only) quanto na solução corporativa (Backend Django).
 
 ### 3. Banco de Dados: Supabase
-Em vez de configurar servidores complexos do zero, usei o **Supabase**. Ele já me dá o banco de dados pronto e ainda cuida de toda a parte de Login (Autenticação), o que me poupou muito tempo para focar no que importa: a Rifa.
+Em vez de configurar servidores complexos do zero, usei o **Supabase**. Ele entrega um banco PostgreSQL pronto e seguro, além de cuidar do Login dos administradores.
 
 ---
 
@@ -43,30 +45,26 @@ Em vez de configurar servidores complexos do zero, usei o **Supabase**. Ele já 
 
 ### 🔐 Acesso Híbrido (Público x Admin)
 Fiz uma lógica interessante aqui:
-1.  **Para todos:** A página principal é aberta. Qualquer pessoa pode entrar, ver os prêmios e participar.
-2.  **Só para mim:** Criei uma área administrativa oculta. Quando eu faço login com minha senha, o sistema libera botões extras que só eu vejo (como o botão de "Resetar Rifa" ou ver o histórico financeiro).
+1.  **Público:** Aberto para compras.
+2.  **Admin:** Protegido por senha. Só o administrador vê os botões de "Resetar" e o painel financeiro.
 
-### 🎲 Sorteio Honesto e Seguro
-Muitos sistemas simples usam sorteios que dão para "adivinhar" se você souber a hora exata. Aqui não.
-Usei uma biblioteca especial do Python chamada `secrets`. Ela usa a aleatoriedade do próprio sistema operacional para gerar o número vencedor. É matematicamente impossível prever o resultado. É justo de verdade.
+### 🎲 Sorteio Honesto (Criptografia)
+Usei criptografia de ponta a ponta. Seja rodando no Frontend ou no Backend, o sistema usa fontes de entropia segura (não dá pra adivinhar o próximo número).
 
 ---
 
 ## 📂 Como organizei as pastas
 
-Tentei deixar tudo muito fácil de achar dentro da pasta `apps`:
-
-*   📂 `apps/client`: Aqui fica todo o **Site** (React). Telas, cores, botões.
-*   📂 `apps/server`: Aqui fica a **Lógica** (Python). As regras do sorteio.
-*   📂 `infra`: Aqui ficam os arquivos de configuração do banco de dados.
+*   📂 `apps/client`: Aqui fica todo o **Site** (React).
+*   📂 `apps/server`: Aqui fica a **Lógica Python** (Django).
+*   📂 `render.yaml`: Arquivo que ensina o servidor de deploy a subir tudo sozinho.
 
 ---
 
 ## 🚀 Próximos Passos
 Se eu fosse continuar melhorando esse projeto amanhã, eu faria:
-1.  **Pagamento Real:** Integraria com o Pix para liberar o bilhete só depois do pagamento.
-2.  **Gráficos:** Colocaria um gráfico para ver quais dias vendemos mais.
-3.  **Chat:** Talvez um chat para as pessoas conversarem durante o sorteio.
+1.  **Pagamento Real:** Integraria com o Pix.
+2.  **Testes E2E:** Criaria robôs para testar a compra de bilhetes automaticamente.
 
 <br />
 

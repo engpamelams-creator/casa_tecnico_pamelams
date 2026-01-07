@@ -23,6 +23,13 @@ O código já está configurado com:
 *   **Build Command:** `./build.sh`
 *   **Start Command:** `cd api && gunicorn setup_rifa.wsgi:application`
 
+### OPÇÃO B: Modo "Serverless" (Só Frontend) ⚡
+Se quiser subir **apenas o Frontend** mas manter o sorteio seguro, nós implementamos `window.crypto` no React.
+*   Basta subir o **Static Site** (passo abaixo).
+*   O Backend (Django) fica no repositório como demonstração de arquitetura para o recrutador, mas não precisa estar rodando para a rifa funcionar.
+
+---
+
 **Environment Variables (Variáveis de Ambiente):**
 1.  `DATABASE_URL`: **IMPORTANTE:** Use a conexão IPv4 (Supavisor) para o Render funcionar.
     *   Formato: `postgresql://[USER].[PROJECT_REF]:[PASSWORD]@aws-0-us-east-2.pooler.supabase.com:5432/postgres`
