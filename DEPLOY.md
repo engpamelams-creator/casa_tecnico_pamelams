@@ -22,14 +22,14 @@ O código já está configurado com:
 *   **Runtime:** `Python 3`
 *   **Build Command:** `./build.sh`
 *   **Start Command:** `cd api && gunicorn setup_rifa.wsgi:application`
-    *   *Nota:* Como o `manage.py` está dentro de `api`, precisamos entrar na pasta.
 
 **Environment Variables (Variáveis de Ambiente):**
-Adicione as seguintes chaves:
-1.  `DATABASE_URL`: (Sua string de conexão do Supabase - `postgres://...`)
-2.  `SECRET_KEY`: (Crie uma senha forte e longa)
+1.  `DATABASE_URL`: **IMPORTANTE:** Use a conexão IPv4 (Supavisor) para o Render funcionar.
+    *   Formato: `postgresql://[USER].[PROJECT_REF]:[PASSWORD]@aws-0-sa-east-1.pooler.supabase.com:6543/postgres`
+    *   **Sua URL Pronta:** `postgresql://postgres.uqzkxtemxnwcoxswptaa:JasperSpencer1234%40@aws-0-sa-east-1.pooler.supabase.com:6543/postgres`
+2.  `SECRET_KEY`: (Gere uma chave aleatória)
 3.  `PYTHON_VERSION`: `3.9.0`
-4.  `RENDER`: `true` (Para ativar configurações de produção)
+4.  `RENDER`: `true`
 
 Clique em **Create Web Service**. 
 ⏳ **Aguarde ficar "Live"** e copie a URL gerada (ex: `https://rifa-backend.onrender.com`).

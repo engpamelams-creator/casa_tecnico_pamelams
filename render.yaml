@@ -1,0 +1,38 @@
+services:
+  # 🐍 BACKEND (Django API)
+  - type: web
+    name: rifa-backend
+    runtime: python
+    repo: https://github.com/sevengat/Teste_Tecnico_Pamela_Menezes
+    plan: free
+    region: oregon 
+    rootDir: apps/server
+    buildCommand: ./build.sh
+    startCommand: cd api && gunicorn setup_rifa.wsgi:application
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.9.0
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        sync: false # User must provide this manually (Security)
+      - key: RENDER
+        value: true
+
+  # ⚛️ FRONTEND (React Static Site)
+  - type: static
+    name: rifa-frontend
+    repo: https://github.com/sevengat/Teste_Tecnico_Pamela_Menezes
+    rootDir: apps/client
+    buildCommand: npm install && npm run build
+    publishDir: dist
+    envVars:
+      - key: VITE_API_URL
+        fromService:
+          type: web
+          name: rifa-backend
+          property: url
+      - key: VITE_SUPABASE_URL
+        sync: false
+      - key: VITE_SUPABASE_ANON_KEY
+        sync: false
