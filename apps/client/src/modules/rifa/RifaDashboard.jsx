@@ -58,16 +58,13 @@ const DashboardHistory = ({ onClose }) => {
 export default function RifaDashboard({ isAuthenticated, onRequestLogin, onLogout }) {
     const [showAdminPanel, setShowAdminPanel] = useState(false);
 
-    // TODO: Move this config to a database table so the client can change the ticket count dynamically
-    const TOTAL_TICKETS = 50;
+    // State for dynamic configuration (Admin only)
+    const [ticketCount, setTicketCount] = useState(50);
+    const [prizeValue, setPrizeValue] = useState(200);
 
     const [soldTickets, setSoldTickets] = useState([]);
     const [isDrawing, setIsDrawing] = useState(false);
     const [lastWinner, setLastWinner] = useState(null);
-
-    // NOTE: Prize value is currently local state. If two admins edit this, they won't see each other's changes.
-    // Future improvement: Sync prize value via Supabase Realtime too.
-    const [prizeValue, setPrizeValue] = useState(200);
 
     const playClickSound = useAudio('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
     const playWinSound = useAudio('https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3');
@@ -143,6 +140,8 @@ export default function RifaDashboard({ isAuthenticated, onRequestLogin, onLogou
 
     return (
         <div className="min-h-screen bg-[#09090b] text-white p-6 flex flex-col items-center justify-center font-sans relative overflow-hidden">
+            {/* Background noise effect (Now consistent with Login) */}
+            <div className="absolute top-[-50%] left-[-50%] w-[200%] h-[200%] bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5 animate-spin-slow pointer-events-none"></div>
 
             {/* Top Navigation */}
             <div className="fixed top-6 right-6 z-40 flex gap-2">
@@ -166,7 +165,7 @@ export default function RifaDashboard({ isAuthenticated, onRequestLogin, onLogou
                 {isAuthenticated && showAdminPanel && <DashboardHistory onClose={() => setShowAdminPanel(false)} />}
             </AnimatePresence>
 
-            <motion.div className="w-full max-w-5xl bg-zinc-900/60 backdrop-blur-2xl border border-white/5 rounded-3xl p-8 shadow-2xl relative">
+            <motion.div className="w-full max-w-5xl bg-zinc-900/60 backdrop-blur-2xl border border-white/5 rounded-3xl p-8 shadow-2xl relative z-10">
                 <header className="flex flex-col md:flex-row justify-between items-center mb-8 border-b border-white/5 pb-6">
                     <div className="flex items-center gap-4">
                         <div className="p-4 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-2xl shadow-lg shadow-yellow-500/20">
@@ -178,26 +177,39 @@ export default function RifaDashboard({ isAuthenticated, onRequestLogin, onLogou
                         </div>
                     </div>
 
-                    <div className="flex gap-8 mt-6 md:mt-0 bg-black/20 p-4 rounded-xl border border-white/5">
-                        <div className="text-right">
-                            <p className="text-xs text-zinc-500 uppercase">Potencial de Prêmio</p>
+                    <div className="flex flex-wrap gap-4 mt-6 md:mt-0 items-end justify-end">
+                        {isAuthenticated && (
+                            <div className="bg-black/20 p-4 rounded-xl border border-white/5 text-right">
+                                <p className="text-xs text-zinc-500 uppercase mb-1">Qtd. Números</p>
+                                <input
+                                    type="number"
+                                    value={ticketCount}
+                                    onChange={e => setTicketCount(Number(e.target.value))}
+                                    className="bg-transparent w-full text-right font-mono font-bold text-white focus:outline-none border-b border-white/20 focus:border-yellow-500"
+                                />
+                            </div>
+                        )}
+
+                        <div className="bg-black/20 p-4 rounded-xl border border-white/5 text-right">
+                            <p className="text-xs text-zinc-500 uppercase mb-1">Prêmio Estimado</p>
                             {isAuthenticated ? (
-                                <div className="flex items-center gap-1 text-yellow-400 font-bold text-xl">
-                                    R$ <input type="number" value={prizeValue} onChange={e => setPrizeValue(e.target.value)} className="bg-transparent w-20 focus:outline-none border-b border-yellow-500/50" />
+                                <div className="flex items-center justify-end gap-1 text-yellow-400 font-bold text-xl">
+                                    R$ <input type="number" value={prizeValue} onChange={e => setPrizeValue(Number(e.target.value))} className="bg-transparent w-24 text-right focus:outline-none border-b border-yellow-500/50 focus:border-yellow-500" />
                                 </div>
                             ) : (
                                 <p className="text-yellow-400 font-bold text-xl">R$ {prizeValue}</p>
                             )}
                         </div>
-                        <div className="text-right">
+
+                        <div className="bg-black/20 p-4 rounded-xl border border-white/5 text-right">
                             <p className="text-xs text-zinc-500 uppercase">Disponibilidade</p>
-                            <p className="text-xl font-mono font-bold text-white">{soldTickets.length}/{TOTAL_TICKETS}</p>
+                            <p className="text-xl font-mono font-bold text-white">{soldTickets.length}/{ticketCount}</p>
                         </div>
                     </div>
                 </header>
 
                 <div className="grid grid-cols-5 sm:grid-cols-10 gap-3 mb-10">
-                    {Array.from({ length: TOTAL_TICKETS }, (_, i) => i + 1).map((num) => {
+                    {Array.from({ length: ticketCount }, (_, i) => i + 1).map((num) => {
                         const isTaken = soldTickets.includes(num);
                         return (
                             <button
@@ -219,7 +231,7 @@ export default function RifaDashboard({ isAuthenticated, onRequestLogin, onLogou
                 </div>
 
                 <div className="flex justify-end gap-3 pt-6 border-t border-white/5">
-                    {isAuthenticated && lastWinner && (
+                    {isAuthenticated && (
                         <button onClick={resetRaffle} className="px-6 py-3 rounded-xl border border-red-500/30 text-red-400 hover:bg-red-500/10 flex items-center gap-2">
                             <RotateCcw size={18} /> Admin: Resetar Ciclo
                         </button>
@@ -228,7 +240,7 @@ export default function RifaDashboard({ isAuthenticated, onRequestLogin, onLogou
                     <button
                         onClick={performDraw}
                         disabled={soldTickets.length === 0 || isDrawing}
-                        className="px-8 py-3 rounded-xl font-bold bg-yellow-500 text-black hover:bg-yellow-400 transition-colors shadow-lg shadow-yellow-500/10"
+                        className="px-8 py-3 rounded-xl font-bold bg-yellow-500 text-black hover:bg-yellow-400 transition-colors shadow-lg shadow-yellow-500/10 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         {isDrawing ? 'Sorteando...' : 'Sortear Agora'}
                     </button>
