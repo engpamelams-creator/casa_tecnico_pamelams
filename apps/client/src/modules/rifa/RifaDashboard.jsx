@@ -307,9 +307,6 @@ export default function RifaDashboard({ isAuthenticated, onRequestLogin, onLogou
 
             {/* Top Navigation */}
             <div className="fixed top-6 right-6 z-40 flex gap-2">
-                {/* Theme Toggle */}
-                <ThemeToggle />
-
                 {/* Achievements Button */}
                 <AchievementsButton />
 
