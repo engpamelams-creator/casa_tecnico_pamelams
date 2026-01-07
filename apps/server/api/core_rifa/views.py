@@ -75,12 +75,14 @@ def sortear_rifa(request, rifa_id):
     """
     Realiza o sorteio utilizando CSPRNG (Cryptographically Secure Pseudo-Random Number Generator).
     """
+    logger.info(f"🎲 Iniciando sorteio para Rifa ID: {rifa_id}")
     try:
         rifa = Rifa.objects.get(id=rifa_id)
         
         # Validação simples
         bilhetes = list(rifa.bilhetes.all()) # Carrega na memória (cuidado se forem milhões)
         if not bilhetes:
+            logger.warning(f"⚠️ Tentativa de sorteio sem bilhetes. Rifa ID: {rifa_id}")
             return response.Response({"erro": "Sem bilhetes para sortear."}, status=400)
 
         # 🔐 SECRETS MODULE: 
@@ -90,6 +92,8 @@ def sortear_rifa(request, rifa_id):
         # Atualiza status
         rifa.status = 'FECHADA'
         rifa.save()
+
+        logger.info(f"🏆 Sorteio Concluído! Vencedor: {ganhador.comprador_nome} (Bilhete {ganhador.numero})")
 
         AuditLog.objects.create(
             acao="SORTEIO_REALIZADO",
