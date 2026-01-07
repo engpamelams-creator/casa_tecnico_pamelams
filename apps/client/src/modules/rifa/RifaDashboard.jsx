@@ -70,11 +70,7 @@ const SettingsModal = ({ onClose, ticketCount, setTicketCount, prizeValue, setPr
                     <button onClick={onClose} className="text-zinc-500 hover:text-white"><X size={20} /></button>
                 </div>
 
-                {!isAuthenticated && (
-                    <div className="mb-4 p-3 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
-                        <p className="text-xs text-yellow-500 text-center">🔒 Faça login para editar as configurações</p>
-                    </div>
-                )}
+
 
                 <div className="space-y-4">
                     <div>
@@ -82,12 +78,8 @@ const SettingsModal = ({ onClose, ticketCount, setTicketCount, prizeValue, setPr
                         <input
                             type="number"
                             value={ticketCount}
-                            onChange={e => isAuthenticated && setTicketCount(Number(e.target.value))}
-                            disabled={!isAuthenticated}
-                            className={`w-full bg-black/50 border rounded-lg p-3 text-white outline-none font-mono ${isAuthenticated
-                                    ? 'border-zinc-700 focus:border-yellow-500 cursor-text'
-                                    : 'border-zinc-800 cursor-not-allowed opacity-60'
-                                }`}
+                            onChange={e => setTicketCount(Number(e.target.value))}
+                            className="w-full bg-black/50 border border-zinc-700 focus:border-yellow-500 rounded-lg p-3 text-white outline-none font-mono cursor-text"
                         />
                     </div>
                     <div>
@@ -95,18 +87,14 @@ const SettingsModal = ({ onClose, ticketCount, setTicketCount, prizeValue, setPr
                         <input
                             type="number"
                             value={prizeValue}
-                            onChange={e => isAuthenticated && setPrizeValue(Number(e.target.value))}
-                            disabled={!isAuthenticated}
-                            className={`w-full bg-black/50 border rounded-lg p-3 text-white outline-none font-mono ${isAuthenticated
-                                    ? 'border-zinc-700 focus:border-yellow-500 cursor-text'
-                                    : 'border-zinc-800 cursor-not-allowed opacity-60'
-                                }`}
+                            onChange={e => setPrizeValue(Number(e.target.value))}
+                            className="w-full bg-black/50 border border-zinc-700 focus:border-yellow-500 rounded-lg p-3 text-white outline-none font-mono cursor-text"
                         />
                     </div>
                 </div>
 
                 <button onClick={onClose} className="w-full mt-6 bg-yellow-500 text-black font-bold py-3 rounded-lg hover:bg-yellow-400 transition-colors">
-                    {isAuthenticated ? 'Salvar Alterações' : 'Fechar'}
+                    Salvar Alterações
                 </button>
             </motion.div>
         </div>
@@ -270,11 +258,12 @@ export default function RifaDashboard({ isAuthenticated, onRequestLogin, onLogou
 
             <AnimatePresence>
                 {isAuthenticated && showAdminPanel && <DashboardHistory onClose={() => setShowAdminPanel(false)} />}
-                {isAuthenticated && showSettings && (
+                {showSettings && (
                     <SettingsModal
                         onClose={() => setShowSettings(false)}
                         ticketCount={ticketCount} setTicketCount={setTicketCount}
                         prizeValue={prizeValue} setPrizeValue={setPrizeValue}
+                        isAuthenticated={isAuthenticated}
                     />
                 )}
             </AnimatePresence>
