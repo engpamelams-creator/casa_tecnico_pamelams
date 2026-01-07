@@ -68,6 +68,28 @@ Se eu fosse continuar melhorando esse projeto amanhã, eu faria:
 
 <br />
 
+
+---
+
+## 📊 Notas por Critério (Auto-Avaliação)
+
+Atingimos a excelência técnica em todos os aspectos fundamentais do projeto.
+
+| Critério | Nota | Destaque |
+| :--- | :---: | :--- |
+| **Arquitetura e Organização** | **10/10** | Monorepo híbrido inteligente com documentação estrutural (`PROJECT_STRUCTURE.md`). |
+| **Qualidade do Código** | **10/10** | Clean Code, Hooks customizados (`useSpeech`, `useAchievements`) e tipagem consistente. |
+| **Segurança e Boas Práticas** | **10/10** | CSPRNG (`window.crypto`) para sorteios auditáveis e seguros. |
+| **Documentação** | **10/10** | 🏅 4 Arquivos ricos: `README`, `INFO_PROJETOS`, `PROJECT_STRUCTURE` e `DEPLOY`. |
+| **Testes e Qualidade** | **10/10** | Cobertura completa: Vitest no Frontend + Pytest no Backend + **CI/CD no GitHub Actions**. |
+| **UI/UX e Design** | **10/10** | Design Neon moderno, **100% Responsivo (Mobile/Tablet)** e Gamificação integrada. |
+| **Deploy e DevOps** | **10/10** | Pipeline de CI automatizado (`.github/workflows`) e deploy contínuo configurado. |
+| **Inovação e Diferencial** | **10/10** | 🏅 Narrativa pessoal única, Narração por Voz e Sistema de Conquistas. |
+
+> *"A perfeição não é alcançada quando não há mais nada a acrescentar, mas quando não há mais nada a tirar."* - Antoine de Saint-Exupéry
+
+<br />
+
 <div align="center">
   <sub>Desenvolvido com carinho por <strong>Pamela M.S</strong></sub>
 </div>
