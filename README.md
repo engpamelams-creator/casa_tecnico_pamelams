@@ -88,6 +88,22 @@ Sou **Desenvolvedora Full Stack** com uma bagagem única. Minha trajetória de 7
 
 ---
 
+## 📂 Índice do Projeto (Project Index)
+
+Guia rápido para navegar pela estrutura e documentação deste repositório:
+
+| Arquivo / Pasta | Descrição & Função |
+| :--- | :--- |
+| **`src/frontend_react_rifa/`** | **Frontend Moderno:** Aplicação React + Vite + Tailwind. Contém a UI interativa, animações (Framer Motion) e lógica de visualização. |
+| **`src/javascript/`** | **Core Logic (Node.js):** Implementação da lógica de rifa usando padrões de projeto (Singleton, Mutex) e segurança (Crypto). |
+| **`src/python_scripts/`** | **Backend Logic (Python):** Scripts de processamento de dados com tipagem forte (Dataclasses) e geração segura de números (Secrets). |
+| **`tests/`** | **QA & Testes:** Suíte de testes automatizados. `rifa.test.js` (Jest) para regras de negócio e `test_rifa.py` (Pytest) para segurança. |
+| **`INFO_PROJETOS.md`** | **Documentação Técnica:** Detalhes arquiteturais, stack tecnológico, decisões de engenharia e roadmap de escalabilidade. |
+| **`README_RESPOSTAS.md`** | **Base de Conhecimento:** Respostas teóricas aprofundadas sobre conceitos de programação e exercícios práticos resolvidos. |
+| **`README.md`** | **Perfil & Overview:** Este arquivo. Visão geral profissional, sobre mim, stack tecnológica e links de contato. |
+
+---
+
 <div align="center">
   <br/>
   <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExM2Q5Z2s1eDZ6eGV4ZGR4Z2Y5Z2s1eDZ6eGV4ZGR4Z2Y5Z2s1eDZ6eGV4ZC9lcD0xNV90cy9maWxlLmdpZg/qgQUggAC3Pfv687qPC/giphy.gif" width="100" />
