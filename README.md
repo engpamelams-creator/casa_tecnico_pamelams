@@ -79,18 +79,7 @@ Sou **Desenvolvedora Full Stack** com uma bagagem única. Minha trajetória de 7
 
 ---
 
-### ⚡ **Github Stats**
 
-<div align="center">
-  <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
-    <img height="180em" src="https://github-readme-stats.vercel.app/api?username=engpamelams-creator&show_icons=true&theme=omni&include_all_commits=true&count_private=true&hide_border=true" />
-    <img height="180em" src="https://github-readme-stats.vercel.app/api/top-langs/?username=engpamelams-creator&layout=compact&theme=omni&hide_border=true" />
-  </div>
-  <br/>
-  <img src="https://github-readme-streak-stats.herokuapp.com/?user=engpamelams-creator&theme=omni&hide_border=true" alt="Streak" />
-</div>
-
----
 
 ## 📂 Índice do Projeto (Project Index)
 
@@ -114,3 +103,4 @@ Guia rápido para navegar pela estrutura e documentação deste repositório:
   <p><sub><i>"Code is poetry written with logic."</i> — Pamela Menezes</sub></p>
   <br/>
 </div>
+
