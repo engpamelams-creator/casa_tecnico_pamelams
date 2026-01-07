@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import confetti from 'canvas-confetti';
 import { supabase } from './supabaseClient';
-import { Trophy, RotateCcw, Crown, Sparkles, Volume2, VolumeX, LayoutDashboard, LogOut, History, Calendar, DollarSign, Lock } from 'lucide-react';
+import { Trophy, RotateCcw, Crown, Sparkles, LayoutDashboard, LogIn, LogOut, History, Calendar, Lock, ArrowLeft, UserCircle } from 'lucide-react';
 
 // --- Hook de Som ---
 const useAudio = (url) => {
@@ -11,9 +11,9 @@ const useAudio = (url) => {
   return play;
 };
 
-// --- TELA DE LOGIN (REAL AUTHENTICATION) ---
-const LoginScreen = ({ onLogin }) => {
-  const [email, setEmail] = useState('ronaldo@teachlead.com'); // Já deixei preenchido pra facilitar
+// --- TELA DE LOGIN (Agora com botão VOLTAR) ---
+const LoginScreen = ({ onLogin, onBack }) => {
+  const [email, setEmail] = useState('ronaldo@teachlead.com');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
@@ -23,92 +23,70 @@ const LoginScreen = ({ onLogin }) => {
     setLoading(true);
     setErrorMessage(null);
 
-    // Conecta no Supabase para verificar senha real
     const { data, error } = await supabase.auth.signInWithPassword({
       email: email,
       password: password,
     });
 
     if (error) {
-      setErrorMessage("Acesso Negado: Usuário ou senha incorretos.");
+      setErrorMessage("Credenciais inválidas.");
       setLoading(false);
     } else {
-      // Login Sucesso!
-      // Opcional: Salvar sessão do usuário
-      console.log("Usuário Logado:", data.user);
-      onLogin(true);
-      // Não precisa setLoading(false) porque o componente vai desmontar
+      onLogin(true); // Sucesso
     }
   };
 
   return (
-    <div className="min-h-screen bg-[#050505] flex items-center justify-center p-4 relative overflow-hidden">
-      {/* Background Animado */}
+    <div className="fixed inset-0 z-50 bg-[#050505] flex items-center justify-center p-4">
+      {/* Fundo Animado */}
       <div className="absolute top-[-50%] left-[-50%] w-[200%] h-[200%] bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5 animate-spin-slow"></div>
 
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
-        className="bg-zinc-900/80 backdrop-blur-xl border border-yellow-500/30 p-8 rounded-3xl w-full max-w-md shadow-[0_0_50px_rgba(234,179,8,0.1)] relative z-10"
+        className="bg-zinc-900/90 backdrop-blur-xl border border-yellow-500/30 p-8 rounded-3xl w-full max-w-md shadow-2xl relative z-10"
       >
-        <div className="text-center mb-8">
-          <div className="inline-block p-4 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-full mb-4 shadow-lg">
+        <button onClick={onBack} className="absolute top-4 left-4 text-zinc-500 hover:text-white flex items-center gap-1 text-sm">
+          <ArrowLeft size={16} /> Voltar para Rifa
+        </button>
+
+        <div className="text-center mb-8 mt-4">
+          <div className="inline-block p-4 bg-yellow-500 rounded-full mb-4 shadow-lg">
             <Lock className="text-black w-8 h-8" />
           </div>
-          <h1 className="text-3xl font-bold text-white tracking-tight">TechLead <span className="text-yellow-400">Access</span></h1>
-          <p className="text-zinc-500 text-sm mt-2">Identifique-se para acessar o painel</p>
+          <h1 className="text-2xl font-bold text-white">Área <span className="text-yellow-400">Restrita</span></h1>
         </div>
 
         <form onSubmit={handleLogin} className="space-y-4">
-          <div className="text-left">
-            <label className="text-xs text-yellow-500 uppercase font-bold ml-1">E-mail Corporativo</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full bg-black/50 border border-zinc-700 rounded-xl p-4 text-white focus:border-yellow-500 focus:outline-none transition-all mt-1"
-            />
-          </div>
-          <div className="text-left">
-            <label className="text-xs text-zinc-500 uppercase font-bold ml-1">Senha de Acesso</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
-              className="w-full bg-black/50 border border-zinc-700 rounded-xl p-4 text-white focus:border-yellow-500 focus:outline-none transition-all mt-1"
-            />
-          </div>
+          <input
+            type="email" value={email} onChange={(e) => setEmail(e.target.value)}
+            className="w-full bg-black/50 border border-zinc-700 rounded-xl p-4 text-white focus:border-yellow-500 outline-none"
+            placeholder="E-mail"
+          />
+          <input
+            type="password" value={password} onChange={(e) => setPassword(e.target.value)}
+            className="w-full bg-black/50 border border-zinc-700 rounded-xl p-4 text-white focus:border-yellow-500 outline-none"
+            placeholder="Senha"
+          />
 
-          {errorMessage && (
-            <div className="bg-red-500/10 border border-red-500/50 text-red-500 text-sm p-3 rounded-lg flex items-center gap-2">
-              <span className="font-bold">Erro:</span> {errorMessage}
-            </div>
-          )}
+          {errorMessage && <p className="text-red-500 text-sm text-center bg-red-500/10 p-2 rounded">{errorMessage}</p>}
 
-          <button
-            disabled={loading}
-            className="w-full bg-gradient-to-r from-yellow-400 to-yellow-600 text-black font-bold py-4 rounded-xl shadow-lg hover:scale-[1.02] transition-transform disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {loading ? 'Verificando Credenciais...' : 'ACESSAR DASHBOARD'}
+          <button disabled={loading} className="w-full bg-yellow-500 text-black font-bold py-4 rounded-xl hover:scale-[1.02] transition-transform">
+            {loading ? 'Verificando...' : 'ACESSAR SISTEMA'}
           </button>
         </form>
-        <p className="text-center text-zinc-700 text-xs mt-6">Supabase Auth Security v2.0</p>
       </motion.div>
     </div>
   );
 };
 
-// --- COMPONENTE DO DASHBOARD (Histórico) ---
+// --- COMPONENTE DO DASHBOARD (Histórico VIP) ---
 const DashboardHistory = ({ onClose }) => {
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchHistory = async () => {
-      const { data } = await supabase
-        .from('historico_vencedores')
-        .select('*')
-        .order('data_sorteio', { ascending: false });
+      const { data } = await supabase.from('historico_vencedores').select('*').order('data_sorteio', { ascending: false });
       setHistory(data || []);
       setLoading(false);
     };
@@ -117,33 +95,25 @@ const DashboardHistory = ({ onClose }) => {
 
   return (
     <motion.div
-      initial={{ opacity: 0, x: 100 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 100 }}
+      initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }}
       className="fixed inset-y-0 right-0 w-full md:w-[400px] bg-zinc-900 border-l border-white/10 shadow-2xl z-50 p-6 overflow-y-auto"
     >
       <div className="flex justify-between items-center mb-8">
-        <h2 className="text-2xl font-bold text-white flex items-center gap-2">
-          <History className="text-yellow-500" /> Histórico
-        </h2>
+        <h2 className="text-2xl font-bold text-white flex items-center gap-2"><History className="text-yellow-500" /> Histórico</h2>
         <button onClick={onClose} className="text-zinc-500 hover:text-white">Fechar</button>
       </div>
-
-      {loading ? <p className="text-zinc-500">Carregando dados...</p> : (
-        <div className="space-y-4">
+      {loading ? <p className="text-zinc-500">Carregando...</p> : (
+        <div className="space-y-3">
           {history.map((item) => (
-            <div key={item.id} className="bg-black/40 border border-white/5 p-4 rounded-xl flex justify-between items-center">
+            <div key={item.id} className="bg-black/40 border border-white/5 p-4 rounded-xl flex justify-between">
               <div>
-                <p className="text-xs text-zinc-500 flex items-center gap-1">
-                  <Calendar size={10} /> {new Date(item.data_sorteio).toLocaleDateString()}
-                </p>
-                <p className="text-white font-bold text-lg mt-1">Bilhete #{item.numero_sorteado}</p>
+                <p className="text-xs text-zinc-500 flex items-center gap-1"><Calendar size={10} /> {new Date(item.data_sorteio).toLocaleDateString()}</p>
+                <p className="text-white font-bold text-lg">Vencedor #{item.numero_sorteado}</p>
               </div>
-              <div className="text-right">
-                <p className="text-xs text-zinc-500">Prêmio</p>
-                <p className="text-yellow-400 font-mono">R$ {item.premio_valor}</p>
-              </div>
+              <div className="text-right"><p className="text-xs text-zinc-500">Prêmio</p><p className="text-yellow-400 font-mono">R$ {item.premio_valor}</p></div>
             </div>
           ))}
-          {history.length === 0 && <p className="text-zinc-600 text-center">Nenhum sorteio realizado ainda.</p>}
+          {history.length === 0 && <p className="text-zinc-600">Sem histórico.</p>}
         </div>
       )}
     </motion.div>
@@ -151,9 +121,10 @@ const DashboardHistory = ({ onClose }) => {
 };
 
 // --- APP PRINCIPAL ---
-export default function RifaSystemFull() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false); // Login State
-  const [showDashboard, setShowDashboard] = useState(false);     // Dashboard State
+export default function RifaSystemHybrid() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false); // Controla se o modal de login aparece
+  const [showDashboard, setShowDashboard] = useState(false);
 
   // Rifa States
   const TOTAL_BILHETES = 50;
@@ -162,13 +133,12 @@ export default function RifaSystemFull() {
   const [ultimoGanhador, setUltimoGanhador] = useState(null);
   const [prizeValue, setPrizeValue] = useState(200);
 
-  // Audio
   const playClick = useAudio('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
   const playWin = useAudio('https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3');
 
-  // Realtime Listener
+  // Realtime
   useEffect(() => {
-    const channel = supabase.channel('rifa-realtime')
+    const channel = supabase.channel('rifa-publica')
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'bilhetes' }, (payload) => {
         setBilhetesVendidos((prev) => [...prev, payload.new.numero]);
         playClick();
@@ -179,7 +149,6 @@ export default function RifaSystemFull() {
       })
       .subscribe();
 
-    // Load initial data
     supabase.from('bilhetes').select('numero').then(({ data }) => {
       if (data) setBilhetesVendidos(data.map(b => b.numero));
     });
@@ -187,59 +156,69 @@ export default function RifaSystemFull() {
     return () => { supabase.removeChannel(channel); };
   }, []);
 
-  // Venda
   const handleToggleBilhete = async (numero) => {
     if (bilhetesVendidos.includes(numero)) return;
     await supabase.from('bilhetes').insert([{ numero: numero }]);
   };
 
-  // Reset
   const resetar = async () => {
+    // PROTEÇÃO EXTRA: Só reseta se estiver logado
+    if (!isAuthenticated) return;
     await supabase.from('bilhetes').delete().neq('id', 0);
   };
 
-  // Sorteio com Salvamento no Histórico
   const handleSortear = async () => {
     if (bilhetesVendidos.length === 0) return;
     setIsSorteando(true);
-
     await new Promise(resolve => setTimeout(resolve, 3000));
     const ganhador = bilhetesVendidos[Math.floor(Math.random() * bilhetesVendidos.length)];
 
-    // 1. Atualiza visual
     setUltimoGanhador(ganhador);
     setIsSorteando(false);
     playWin();
     confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#FFD700', '#FFFFFF'] });
 
-    // 2. Salva no Dashboard (Banco de Dados)
-    await supabase.from('historico_vencedores').insert([{
-      numero_sorteado: ganhador,
-      premio_valor: prizeValue
-    }]);
+    // Salva histórico (qualquer um pode sortear no demo, mas o log fica salvo)
+    await supabase.from('historico_vencedores').insert([{ numero_sorteado: ganhador, premio_valor: prizeValue }]);
   };
-
-  // Se não logou, mostra Login
-  if (!isAuthenticated) {
-    return <LoginScreen onLogin={setIsAuthenticated} />;
-  }
 
   return (
     <div className="min-h-screen bg-[#09090b] text-white p-6 flex flex-col items-center justify-center font-sans relative overflow-hidden">
 
-      {/* Botões Superiores */}
+      {/* MENU SUPERIOR (A Mágica acontece aqui) */}
       <div className="fixed top-6 right-6 z-40 flex gap-2">
-        <button onClick={() => setShowDashboard(true)} className="flex items-center gap-2 px-4 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-full text-sm transition-colors border border-white/10">
-          <LayoutDashboard size={16} className="text-yellow-500" /> Dashboard
-        </button>
-        <button onClick={() => setIsAuthenticated(false)} className="p-2 bg-red-500/10 text-red-500 hover:bg-red-500/20 rounded-full transition-colors">
-          <LogOut size={18} />
-        </button>
+        {isAuthenticated ? (
+          <>
+            {/* Botões VIP (Só aparecem se logado) */}
+            <button onClick={() => setShowDashboard(true)} className="flex items-center gap-2 px-4 py-2 bg-yellow-500/10 text-yellow-500 border border-yellow-500/50 hover:bg-yellow-500/20 rounded-full text-sm transition-colors">
+              <LayoutDashboard size={16} /> Admin
+            </button>
+            <button onClick={() => setIsAuthenticated(false)} className="px-4 py-2 bg-zinc-800 text-zinc-400 hover:text-white rounded-full text-sm flex gap-2 items-center">
+              <LogOut size={16} /> Sair
+            </button>
+          </>
+        ) : (
+          /* Botão Público de Login */
+          <button onClick={() => setShowLoginModal(true)} className="flex items-center gap-2 px-4 py-2 bg-zinc-800 hover:bg-zinc-700 border border-white/10 rounded-full text-sm transition-colors text-zinc-300">
+            <UserCircle size={16} /> Área Restrita
+          </button>
+        )}
       </div>
+
+      {/* MODAL DE LOGIN (Sobreposto) */}
+      {showLoginModal && (
+        <LoginScreen
+          onLogin={(success) => {
+            setIsAuthenticated(success);
+            setShowLoginModal(false);
+          }}
+          onBack={() => setShowLoginModal(false)}
+        />
+      )}
 
       {/* DASHBOARD SLIDE-OVER */}
       <AnimatePresence>
-        {showDashboard && <DashboardHistory onClose={() => setShowDashboard(false)} />}
+        {isAuthenticated && showDashboard && <DashboardHistory onClose={() => setShowDashboard(false)} />}
       </AnimatePresence>
 
       <motion.div className="w-full max-w-5xl bg-zinc-900/60 backdrop-blur-2xl border border-white/5 rounded-3xl p-8 shadow-2xl relative">
@@ -250,24 +229,26 @@ export default function RifaSystemFull() {
               <Crown className="text-black w-8 h-8" />
             </div>
             <div>
-              <h1 className="text-3xl font-bold tracking-tight text-white">ROYAL <span className="text-yellow-400">ADMIN</span></h1>
-              <p className="text-zinc-500 text-xs uppercase tracking-[0.3em] mt-1 font-medium">Painel de Controle</p>
+              <h1 className="text-3xl font-bold tracking-tight text-white">ROYAL <span className="text-yellow-400">RIFA</span></h1>
+              <p className="text-zinc-500 text-xs uppercase tracking-[0.3em] mt-1 font-medium">Sistema Aberto</p>
             </div>
           </div>
 
           <div className="flex gap-8 mt-6 md:mt-0 bg-black/20 p-4 rounded-xl border border-white/5">
             <div className="text-right">
-              <p className="text-xs text-zinc-500 uppercase">Valor do Prêmio</p>
-              <div className="flex items-center gap-1 text-yellow-400 font-bold text-xl">
-                R$ <input
-                  type="number" value={prizeValue} onChange={e => setPrizeValue(e.target.value)}
-                  className="bg-transparent w-20 focus:outline-none border-b border-yellow-500/50"
-                />
-              </div>
+              <p className="text-xs text-zinc-500 uppercase">Prêmio Atual</p>
+              {/* Se for Admin, pode editar o valor. Se for público, só vê. */}
+              {isAuthenticated ? (
+                <div className="flex items-center gap-1 text-yellow-400 font-bold text-xl">
+                  R$ <input type="number" value={prizeValue} onChange={e => setPrizeValue(e.target.value)} className="bg-transparent w-20 focus:outline-none border-b border-yellow-500/50" />
+                </div>
+              ) : (
+                <p className="text-yellow-400 font-bold text-xl">R$ {prizeValue}</p>
+              )}
             </div>
             <div className="text-right">
-              <p className="text-xs text-zinc-500 uppercase">Apostas</p>
-              <p className="text-xl font-mono font-bold text-white">{bilhetesVendidos.length}</p>
+              <p className="text-xs text-zinc-500 uppercase">Bilhetes</p>
+              <p className="text-xl font-mono font-bold text-white">{bilhetesVendidos.length}/{TOTAL_BILHETES}</p>
             </div>
           </div>
         </header>
@@ -297,11 +278,13 @@ export default function RifaSystemFull() {
 
         {/* Footer Actions */}
         <div className="flex justify-end gap-3 pt-6 border-t border-white/5">
-          {ultimoGanhador && (
-            <button onClick={resetar} className="px-6 py-3 rounded-xl border border-white/10 text-zinc-400 hover:text-white flex items-center gap-2">
-              <RotateCcw size={18} /> Limpar Mesa
+          {/* BOTÃO RESETAR (Só para Admin) */}
+          {isAuthenticated && ultimoGanhador && (
+            <button onClick={resetar} className="px-6 py-3 rounded-xl border border-red-500/30 text-red-400 hover:bg-red-500/10 flex items-center gap-2">
+              <RotateCcw size={18} /> Admin: Resetar
             </button>
           )}
+
           <button
             onClick={handleSortear}
             disabled={bilhetesVendidos.length === 0 || isSorteando}
@@ -315,7 +298,7 @@ export default function RifaSystemFull() {
       {/* Modal Vitória */}
       <AnimatePresence>
         {ultimoGanhador && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-md">
+          <div className="fixed inset-0 z-30 flex items-center justify-center bg-black/90 backdrop-blur-md">
             <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="text-center">
               <h2 className="text-yellow-500 text-2xl font-bold mb-4">VENCEDOR</h2>
               <div className="text-9xl font-black text-white">{ultimoGanhador}</div>
