@@ -103,36 +103,37 @@ const FloatingDiceBackground = () => {
     // Array of dice icons to randomly select from
     const DiceIcons = [Dice1, Dice2, Dice3, Dice4, Dice5, Dice6];
 
-    // Generate 15 floating dice with random properties
-    const diceElements = Array.from({ length: 15 }).map((_, i) => {
+    // Generate 25 floating dice with random properties
+    const diceElements = Array.from({ length: 25 }).map((_, i) => {
         const RandomDice = DiceIcons[Math.floor(Math.random() * DiceIcons.length)];
         const left = Math.floor(Math.random() * 100) + '%';
-        const delay = Math.floor(Math.random() * 15) + 's';
-        const duration = Math.floor(Math.random() * 10) + 15 + 's'; // 15-25s duration
-        const size = Math.floor(Math.random() * 20) + 20 + 'px'; // 20-40px size
+        const delay = -(Math.floor(Math.random() * 20)) + 's'; // Negative delay for staggered start
+        const duration = Math.floor(Math.random() * 15) + 20 + 's'; // 20-35s duration
+        const size = Math.floor(Math.random() * 40) + 30; // 30-70px size
+        const opacity = (Math.random() * 0.3 + 0.15).toFixed(2); // 0.15-0.45 opacity
 
         return (
             <div
                 key={i}
-                className="absolute text-yellow-500/20 animate-float"
+                className="absolute text-yellow-500 animate-float"
                 style={{
                     left: left,
                     animationDelay: delay,
                     animationDuration: duration,
-                    fontSize: size,
-                    // If icons accept size prop or via css
-                    width: size,
-                    height: size
+                    fontSize: size + 'px',
+                    opacity: opacity,
+                    width: size + 'px',
+                    height: size + 'px'
                 }}
             >
-                <RandomDice size={size.replace('px', '')} />
+                <RandomDice size={size} strokeWidth={1.5} />
             </div>
         );
     });
 
     return (
-        <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden bg-[#09090b]">
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-yellow-900/10 via-[#09090b] to-[#09090b]"></div>
+        <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden bg-gradient-to-b from-[#0a0a0a] via-[#09090b] to-black">
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-yellow-900/15 via-transparent to-transparent"></div>
             {diceElements}
         </div>
     );
