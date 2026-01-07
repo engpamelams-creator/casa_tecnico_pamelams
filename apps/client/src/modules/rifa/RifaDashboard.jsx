@@ -55,7 +55,7 @@ const DashboardHistory = ({ onClose }) => {
     );
 };
 
-const SettingsModal = ({ onClose, ticketCount, setTicketCount, prizeValue, setPrizeValue }) => {
+const SettingsModal = ({ onClose, ticketCount, setTicketCount, prizeValue, setPrizeValue, isAuthenticated }) => {
     return (
         <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
             <motion.div
@@ -70,14 +70,24 @@ const SettingsModal = ({ onClose, ticketCount, setTicketCount, prizeValue, setPr
                     <button onClick={onClose} className="text-zinc-500 hover:text-white"><X size={20} /></button>
                 </div>
 
+                {!isAuthenticated && (
+                    <div className="mb-4 p-3 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
+                        <p className="text-xs text-yellow-500 text-center">🔒 Faça login para editar as configurações</p>
+                    </div>
+                )}
+
                 <div className="space-y-4">
                     <div>
                         <label className="text-xs text-zinc-500 uppercase font-bold block mb-2">Quantidade de Números</label>
                         <input
                             type="number"
                             value={ticketCount}
-                            onChange={e => setTicketCount(Number(e.target.value))}
-                            className="w-full bg-black/50 border border-zinc-700 rounded-lg p-3 text-white focus:border-yellow-500 outline-none font-mono"
+                            onChange={e => isAuthenticated && setTicketCount(Number(e.target.value))}
+                            disabled={!isAuthenticated}
+                            className={`w-full bg-black/50 border rounded-lg p-3 text-white outline-none font-mono ${isAuthenticated
+                                    ? 'border-zinc-700 focus:border-yellow-500 cursor-text'
+                                    : 'border-zinc-800 cursor-not-allowed opacity-60'
+                                }`}
                         />
                     </div>
                     <div>
@@ -85,14 +95,18 @@ const SettingsModal = ({ onClose, ticketCount, setTicketCount, prizeValue, setPr
                         <input
                             type="number"
                             value={prizeValue}
-                            onChange={e => setPrizeValue(Number(e.target.value))}
-                            className="w-full bg-black/50 border border-zinc-700 rounded-lg p-3 text-white focus:border-yellow-500 outline-none font-mono"
+                            onChange={e => isAuthenticated && setPrizeValue(Number(e.target.value))}
+                            disabled={!isAuthenticated}
+                            className={`w-full bg-black/50 border rounded-lg p-3 text-white outline-none font-mono ${isAuthenticated
+                                    ? 'border-zinc-700 focus:border-yellow-500 cursor-text'
+                                    : 'border-zinc-800 cursor-not-allowed opacity-60'
+                                }`}
                         />
                     </div>
                 </div>
 
                 <button onClick={onClose} className="w-full mt-6 bg-yellow-500 text-black font-bold py-3 rounded-lg hover:bg-yellow-400 transition-colors">
-                    Salvar Alterações
+                    {isAuthenticated ? 'Salvar Alterações' : 'Fechar'}
                 </button>
             </motion.div>
         </div>
@@ -233,13 +247,13 @@ export default function RifaDashboard({ isAuthenticated, onRequestLogin, onLogou
 
             {/* Top Navigation */}
             <div className="fixed top-6 right-6 z-40 flex gap-2">
+                {/* Settings Button - Always Visible (Hybrid Mode) */}
+                <button onClick={() => setShowSettings(true)} className="flex items-center gap-2 px-3 py-2 bg-zinc-800 text-zinc-400 hover:text-white hover:bg-zinc-700 rounded-full transition-colors border border-white/5">
+                    <Settings size={18} />
+                </button>
+
                 {isAuthenticated ? (
                     <>
-                        {/* 2. Botão de Configurações (Engrenagem) Restaurado */}
-                        <button onClick={() => setShowSettings(true)} className="flex items-center gap-2 px-3 py-2 bg-zinc-800 text-zinc-400 hover:text-white hover:bg-zinc-700 rounded-full transition-colors border border-white/5">
-                            <Settings size={18} />
-                        </button>
-
                         <button onClick={() => setShowAdminPanel(true)} className="flex items-center gap-2 px-4 py-2 bg-yellow-500/10 text-yellow-500 border border-yellow-500/50 hover:bg-yellow-500/20 rounded-full text-sm transition-colors">
                             <LayoutDashboard size={16} /> Admin
                         </button>
