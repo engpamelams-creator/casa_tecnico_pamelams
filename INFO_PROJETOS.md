@@ -6,30 +6,32 @@
 
 <br />
 
-> **Project Status:** Production Ready (MVP) 🚀
-> **Architecture:** Modular Monolith with Microservices potential
-> **Core Focus:** Data Integrity, Cryptographic Security, and High-Performance UI.
+> **Project Status:** Production Ready (Enterprise Grade) 🚀
+> **Architecture:** Modular Monorepo (Nest.js Style)
+> **Core Focus:** Data Integrity, Hybrid Access Control, and Real-Time Synchronization.
 
 ---
 
 ## 🏗️ Architectural Design (High Level)
 
-Este projeto foi concebido seguindo os princípios de **Clean Architecture** e **Domain-Driven Design (DDD)**, garantindo desacoplamento entre camadas de interface, lógica de negócios e segurança.
+Este projeto evoluiu para uma arquitetura de **Modular Monorepo**, inspirada em frameworks corporativos como Nest.js e Nx. Isso garante que o crescimento do software seja sustentável, com clara separação entre domínios.
 
 ```mermaid
 graph TD
-    User((User Interaction)) --> |HTTPS/WSS| Frontend[React Client (Vite/Tailwind)]
-    Frontend --> |Async Requests| CoreLayer{Core Logic Layer}
+    User((User Interaction)) --> |HTTPS/WSS| ClientApp[React Client (Apps/Client)]
+    ClientApp --> |Realtime Sync| SupabaseDB[(Supabase Postgres)]
+    ClientApp --> |Auth| SupabaseAuth[Supabase Auth]
     
-    subgraph "Core Logic (Node.js)"
-        CoreLayer --> |Singleton| RifaService[Rifa Service State]
-        RifaService --> |Mutex Lock| Concurrency[Concurrency Controller]
-        RifaService --> |CSPRNG| Crypto[Node.js Crypto Module]
+    subgraph "Frontend Architecture (Modular)"
+        ClientApp --> CoreModule[Core Module]
+        ClientApp --> AuthModule[Auth Module]
+        ClientApp --> RifaModule[Rifa Module]
+        ClientApp --> SharedModule[Shared UI/Hooks]
     end
-    
-    subgraph "Backend Logic (Python)"
-        PyScript[Data Processing Scripts] --> |Type Safety| DataClasses[Strict Data Models]
-        PyScript --> |Secrets Module| PyCrypto[Python Secrets CSPRNG]
+
+    subgraph "Backend Architecture (Django)"
+        DjangoAPI[Django Rest Framework] --> |Concurrency Control| DB_Lock[Row Level Locking]
+        DjangoAPI --> |Audit| AuditLog[Audit Logs]
     end
 ```
 
@@ -37,86 +39,86 @@ graph TD
 
 ## 🛠️ Technology Stack & Decision Records (ADRs)
 
-### 1. Frontend: High-Performance React
-*   **Engine:** `Vite` (ESBuild) para bundling instantâneo e Hot Module Replacement (HMR).
-*   **UI/UX:** `Framer Motion` para orquestração de animações baseadas em física (Spring Physics), garantindo fluidez 60fps.
-*   **Styling:** `Tailwind CSS v3` (JIT Compiler) para design system atômico e redução de bundle size.
-*   **State Management:** React Hooks (`useState`, `useEffect`) com otimização de re-render via segregação de componentes.
+### 1. Frontend: Modular React (Nest.js Style)
+*   **Structure:** `apps/client` organizado em módulos (`auth`, `rifa`, `shared`, `core`).
+*   **Engine:** `Vite` (ESBuild) para bundling instantâneo.
+*   **UI Library:** `Framer Motion` + `Tailwind CSS v3` (JIT) para interfaces fluidas e performáticas.
+*   **Real-time:** `Supabase Realtime` (WebSockets) para sincronização instantânea de estado entre múltiplos clientes (Multiplayer).
 
-### 2. Core Logic: Security First Principle
-*   **Runtime:** `Node.js` runtime para execução assíncrona non-blocking I/O.
-*   **Algorithm:** Implementação de **Singleton Pattern** para garantir "Single Source of Truth" do estado da rifa.
-*   **Data Structures:** Utilização de `Set` (Hash Map) para lookup de bilhetes vendidos em **O(1)** (tempo constante), superior a arrays O(n).
+### 2. Backend: Django Enterprise Layer
+*   **Framework:** `Django` + `Django REST Framework` (DRF).
+*   **Security:** `transaction.atomic` e `select_for_update` para garantir consistência em ambientes de alta concorrência.
+*   **Docs:** `Swagger/Redoc` (drf-yasg) para documentação automática de API.
+
+### 3. Database & Auth: Supabase (PostgreSQL)
+*   **Auth:** Integração nativa com Supabase Auth para gestão de sessões seguras.
+*   **RLS (Row Level Security):** Políticas de segurança a nível de banco de dados para proteger dados sensíveis.
 
 ---
 
 ## 🛡️ Engineering Differentiators (Deep Dive)
 
-### 🔐 Cryptographically Secure PRNG (CSPRNG)
-Diferente de implementações simples que utilizam `Math.random()` (baseado em timestamp e previsível), este projeto utiliza fontes de entropia do sistema operacional.
-*   **JS:** `crypto.randomInt()` - Garante distribuição uniforme e imprevisibilidade.
-*   **Python:** `secrets` module - Segurança de nível militar para geração de tokens e sorteios.
+### 🔐 Hybrid Access Control (RBAC Lite)
+Implementamos um sistema de acesso híbrido sofisticado:
+1.  **Public Layer:** Acesso irrestrito para visualização e compra (High Availability).
+2.  **Protected Layer:** Painel Administrativo acessível apenas via autenticação segura. O sistema verifica a sessão e libera funcionalidades críticas (Reset, Dashboard Financeiro) dinamicamente.
 
 ### 🚦 Concurrency & Race Conditions
-Para mitigar o problema do "Double Spending" (dois usuários comprando o mesmo bilhete no mesmo milissegundo), implementei uma simulação de **Mutex (Mutual Exclusion)**.
-> *O sistema "trava" (Locks) o recurso crítico durante a transação de compra, forçando requisições concorrentes a aguardarem (Await Queue) até a liberação do estado, garantindo Atomicidade (ACID).*
+Para mitigar o problema do "Double Spending" (dois usuários comprando o mesmo bilhete no mesmo milissegundo):
+*   **Frontend:** Otimistic Updates com rollback em caso de falha.
+*   **Backend:** Locks de banco de dados (`FOR UPDATE`) garantem que apenas uma transação modifique o estado do bilhete por vez.
+
+### 🎲 Cryptographically Secure PRNG (CSPRNG)
+Sorteios não utilizam `Math.random()` inseguro.
+*   **Python:** Módulo `secrets` para entropia do sistema operacional, invulnerável a ataques de predição.
 
 ---
 
 ## 🎯 Quality Assurance (QA) & Testing Strategy
 
-A confiabilidade é assegurada por uma suíte de testes automatizados multi-linguagem, cobrindo Unit Tests e Integration Scenarios.
+A confiabilidade é assegurada por testes automatizados em ambas as pontas do sistema.
 
-### 🧪 Javascript Testing (Jest Framework)
-Foco na validação comportamental e de estado.
-*   **Concurrency Stress Test:** Simulação de múltiplas chamadas assíncronas simultâneas.
-*   **Boundary Testing:** Testes de limites (Ex: comprar bilhete 0, bilhete N+1).
-*   **State Reset:** Garantia de limpeza de memória entre suítes de teste.
+### 🧪 Frontend & Integration (Jest)
+*   **Realtime Simulation:** Testes que validam a chegada de eventos WebSocket.
+*   **Component Isolation:** Testes unitários dos módulos `auth` e `rifa` de forma isolada.
 
-### 🐍 Python Testing (Pytest)
-Foco na integridade lógica e tipagem.
-*   **Type Checking:** Validação rigorosa de tipos com `dataclasses`.
-*   **Security Audit:** Verificação da geração de chaves.
-
-**Para executar a suíte de testes:**
-```bash
-# Executa a suíte frontend/core (Relatório detalhado)
-npx jest --verbose
-
-# Executa a suíte de backend logic
-python -m pytest
-```
+### 🐍 Backend Logic (Pytest)
+*   **Transaction Integrity:** Testes que tentam forçar Race Conditions para validar os Locks.
+*   **Security Audit:** Verificação da geração de chaves e integridade dos dados.
 
 ---
 
-## 📂 Project Directory Structure
+## 📂 Project Directory Structure (Monorepo)
+
+A estrutura foi refatorada para suportar escala infinita:
 
 ```bash
 📦 Teste_Tecnico_Pamela_Menezes
- ┣ 📂 src
- ┃ ┣ 📂 Rifa_Real             # Frontend Moderno (SPA)
+ ┣ 📂 apps                      # Application Layer
+ ┃ ┣ 📂 client                  # React Frontend
  ┃ ┃ ┣ 📂 src
- ┃ ┃ ┃ ┣ 📜 App.jsx          # Reactive Logic & Animations
- ┃ ┃ ┃ ┗ 📜 main.jsx         # DOM Entry Point
- ┃ ┃ ┗ 📜 package.json       # Dependency Tree
- ┃ ┣ 📂 javascript            # Node.js Core Logic
- ┃ ┃ ┗ 📜 desafio_rifa.js    # Singleton Service
- ┃ ┗ 📂 python_scripts        # Python Backend Logic
- ┃ ┃ ┗ 📜 solucao_logica.py  # Typed Implementation
- ┣ 📂 tests                   # QA Automation Suite
- ┃ ┣ 📜 rifa.test.js         # Jest Scenarios
- ┃ ┗ 📜 test_rifa.py         # Pytest Scenarios
- ┣ 📜 INFO_PROJETOS.md        # Technical Documentation
- ┗ 📜 README.md               # Executive Summary
+ ┃ ┃ ┃ ┣ 📂 modules             # Feature Modules (Domain functionality)
+ ┃ ┃ ┃ ┃ ┣ 📂 auth              # Login & Security
+ ┃ ┃ ┃ ┃ ┗ 📂 rifa              # Core Business Logic
+ ┃ ┃ ┃ ┣ 📂 shared              # Reusable Components & Hooks
+ ┃ ┃ ┃ ┗ 📂 core                # Global Configuration (Supabase)
+ ┃ ┗ 📂 server                  # Python Backend Logic
+ ┃ ┃ ┣ 📂 api                   # Django Project
+ ┃ ┃ ┗ 📂 scripts               # Standalone Scripts
+ ┣ 📂 infra                     # Infrastructure Layer
+ ┃ ┗ 📂 database                # SQL Scripts & Migrations
+ ┣ 📂 tests                     # QA Automation Suite
+ ┣ 📜 INFO_PROJETOS.md          # Technical Documentation
+ ┗ 📜 README.md                 # Executive Summary
 ```
 
 ---
 
 ## 🚀 Scalability Roadmap
 
-1.  **Containerization:** Dockerfile para isolamento de ambiente (Node 20-alpine).
-2.  **API Migration:** Expor as funções core via **FastAPI** (Python) ou **Express** (Node) para arquitetura Client-Server real.
-3.  **Persistência:** Migrar do estado em memória para **PostgreSQL** ou **Redis** (para gestão de Locks distribuídos).
+1.  **Microservices:** Extrair o módulo de autenticação para um serviço isolado.
+2.  **CI/CD:** Pipelines no GitHub Actions para deploy automático no Netlify (Front) e Railway (Back).
+3.  **Analytics:** Integração com PostHog para monitoramento de comportamento do usuário.
 
 <br />
 
