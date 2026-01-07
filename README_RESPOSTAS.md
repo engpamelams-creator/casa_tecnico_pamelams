@@ -1,155 +1,234 @@
-# Teste Técnico - Estagiários | Candidata: Pamela Menezes
+<div align="center">
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=0d1117&height=200&section=header&text=Solu%C3%A7%C3%B5es%20T%C3%A9cnicas%20%26%20Insights&fontSize=40&fontColor=ffffff&animation=fadeIn&fontAlignY=35&desc=Teoria%20aprofundada%20e%20C%C3%B3digo%20Limpo&descAlignY=60&descAlign=50" width="100%" />
+</div>
 
-## Parte 1: Questões Teóricas
+<br />
 
-### Questão 1
-Explique com suas palavras: O que é uma variável em programação? Dê um exemplo prático relacionado a um jogo de cassino.
+<div align="center">
+  <p>
+    > *"Não basta o código funcionar. Ele precisa ser legível, escalável e resolver o problema certo."*
+  </p>
+  <a href="#-parte-1-domínio-teórico-deep-learning">📜 Teoria</a> •
+  <a href="#%EF%B8%8F-parte-2-soluções-práticas-handson">💻 Prática</a> •
+  <a href="#-bônus-sistema-de-rifas-completo">🎲 Sistema de Rifa</a>
+</div>
 
-**Resposta:**
-Uma variável é um espaço na memória do computador reservado para guardar dados que podem mudar durante a execução do programa. É como uma "caixa" com uma etiqueta.
-**Exemplo no Cassino:** Uma variável chamada `saldoDoJogador`. No início da noite, ela guarda o valor `R$ 100,00`. Se o jogador ganha uma aposta de 50 reais, o valor dentro dessa "caixa" é atualizado para `R$ 150,00`.
+---
 
-### Questão 2
-Qual a diferença entre uma função e um loop? Dê um exemplo de quando você usaria cada um em um sistema de rifa.
+## 🧠 Parte 1: Domínio Teórico (Deep Learning)
 
-**Resposta:**
-- **Função:** É um bloco de código que realiza uma tarefa específica e pode ser reutilizado várias vezes. É como uma "fórmula" ou "ação".
-- **Loop (Laço):** É uma estrutura que repete uma ação várias vezes até que uma condição seja atendida.
-**Exemplo na Rifa:**
-- Usaria uma **Função** chamada `sortearVencedor()` para conter a lógica de escolher um número.
-- Usaria um **Loop** para gerar os 100 bilhetes da rifa (do número 1 ao 100) e colocá-los à venda.
+> *Clique nas setas para revelar as respostas detalhadas.*
 
-### Questão 3
-Em um jogo do bicho, você precisa armazenar os resultados de 100 apostas. Qual estrutura de dados você usaria? Por quê?
+<details>
+  <summary><h3>❓ 1. O que é uma variável? (Conceito & Analogia)</h3></summary>
+  
+  > **Resposta Senior:**
+  >
+  > Uma variável é uma **alocação nomeada de memória** que armazena um valor mutável durante o ciclo de vida de uma aplicação. Em arquitetura de software, variáveis bem nomeadas são a base da documentação do código.
+  >
+  > 🎰 **Analogia do Cassino:**
+  > Imagine um display digital acima de uma mesa de Poker chamado `ValorDoPote`. No início da rodada, ele mostra `R$ 0,00`. Conforme os jogadores apostam, o valor *varia* (R$ 50, R$ 100...). O display é a variável (o container), e o número brilhando nele é o valor (o dado).
 
-**Resposta:**
-Eu usaria um **Array (Lista)** de Objetos.
-**Por que?** O Array permite armazenar uma sequência ordenada de itens. Como cada aposta tem detalhes complexos (quem apostou, valor, animal escolhido), cada item do array seria um Objeto.
-Exemplo: `[{ id: 1, animal: 'Leão', valor: 50 }, { id: 2, animal: 'Gato', valor: 20 }]`.
+</details>
 
-### Questão 4
-Explique o que é um "if/else" e dê um exemplo prático: validar se um jogador tem saldo suficiente para fazer uma aposta.
 
-**Resposta:**
-O "if/else" é uma estrutura condicional de controle de fluxo. Ele permite que o código tome decisões: "SE (if) isso for verdade, faça X; SENÃO (else), faça Y".
-**Exemplo:**
+<details>
+  <summary><h3>❓ 2. Função vs. Loop (Quando usar?)</h3></summary>
+  
+  > **Resposta Senior:**
+  >
+  > *   **Função (Encapsulamento):** É um bloco de lógica isolado projetado para realizar uma tarefa única e reutilizável. Promove o princípio DRY (Don't Repeat Yourself).
+  > *   **Loop (Iteração):** É uma estrutura de controle de fluxo que repete instruções enquanto uma condição for verdadeira.
+  >
+  > 🎫 **No Sistema de Rifa:**
+  > *   **Função:** `sortearVencedor()` -> Uma ação que eu chamo quando preciso (no clique de um botão).
+  > *   **Loop:** `for (i = 1; i <= 100; i++)` -> A ação automática do sistema gerando os 100 números de bilhetes iniciais para o banco de dados.
+
+</details>
+
+
+<details>
+  <summary><h3>❓ 3. Estrutura de Dados para Jogo do Bicho</h3></summary>
+  
+  > **Resposta Senior:**
+  >
+  > A escolha ideal é um **Array de Objetos** (`List<Object>` ou `Dictionary` dependendo da busca).
+  >
+  > **Por quê?**
+  > Dados reais são complexos. Um array simples `[50, 20, 10]` guardaria o valor, mas perderia o *contexto*.
+  > Um Objeto encapsula a entidade completa:
+  > ```json
+  > [
+  >   { "id": 1, "apostador": "Pamela", "animal": "Leão", "valor": 50.00, "timestamp": "2024-01-07" },
+  >   { "id": 2, "apostador": "João", "animal": "Gato", "valor": 20.00, "timestamp": "2024-01-07" }
+  > ]
+  > ```
+  > Isso permite filtrar, somar e auditar as apostas com facilidade.
+
+</details>
+
+
+<details>
+  <summary><h3>❓ 4. O Poder do 'If/Else' (Controle de Fluxo)</h3></summary>
+  
+  > **Resposta Senior:**
+  > O `if/else` é a espinha dorsal da lógica de negócios. Ele direciona o comportamento do software baseando-se em estados.
+  >
+  > 💻 **Validação de Saldo (Clean Code):**
+  > ```javascript
+  > const validarTransacao = (saldo, aposta) => {
+  >   if (saldo < aposta) {
+  >     throw new Error("Saldo Insuficiente: Recarregue sua carteira.");
+  >   }
+  >   return true; // "Happy Path"
+  > }
+  > ```
+
+</details>
+
+
+<details>
+  <summary><h3>❓ 5. Divisão por Zero & Tratamento de Erro</h3></summary>
+  
+  > **Resposta Senior:**
+  > Matematicamente indefinido, computacionalmente perigoso. Pode gerar `Infinity` (JS) ou `Exceptions` (Python/C#), quebrando a aplicação.
+  >
+  > 🛡️ **Defensive Programming:**
+  > Nunca confie em inputs externos.
+  > ```javascript
+  > function calcularProbabilidade(meusBilhetes, totalBilhetes) {
+  >   // Guard Clauese (Cláusula de Guarda)
+  >   if (totalBilhetes === 0) return 0; 
+  >   
+  >   return (meusBilhetes / totalBilhetes) * 100;
+  > }
+  > ```
+
+</details>
+
+---
+
+## 🛠️ Parte 2: Soluções Práticas (Hands-on)
+
+> *O código abaixo prioriza legibilidade e princípios SOLID.*
+
+### 🎲 Exercício 1: Engine de Sorteio
+Gera um número cryptographically random (simulado) dentro de um range seguro.
+
 ```javascript
-if (saldoDoJogador >= valorDaAposta) {
-    console.log("Aposta realizada com sucesso!");
-} else {
-    console.log("Saldo insuficiente. Faça uma recarga.");
-}
-```
-
-### Questão 5
-O que acontece se você tentar dividir um número por zero em programação? Como você evitaria esse erro em um cálculo de probabilidade?
-
-**Resposta:** Dependendo da linguagem, pode causar um erro fatal (crash) ou retornar "Infinity" (infinito). Em cálculos de probabilidade, isso gera resultados inválidos. Como evitar: Sempre validando o divisor antes do cálculo. Exemplo: `if (totalDeBilhetes > 0) { return meusBilhetes / totalDeBilhetes; } else { return 0; }`
-
-## Parte 2 e 3: Soluções Práticas
-Nota Técnica: Para demonstrar organização e boas práticas de Engenharia de Software, os códigos funcionais e testáveis destes exercícios foram separados em arquivos .js na pasta /src deste repositório. Abaixo, apresento as soluções conforme solicitado.
-
-### Exercício 1: Função de Sorteio
-```javascript
-// Função que retorna um número aleatório entre 1 e 100
-function sortearNumero() {
-    // Math.random() gera entre 0.0 e 1.0
-    // Multiplicamos por 100 para ter entre 0.0 e 99.9
-    // Math.floor arredonda para baixo (0 a 99)
-    // Somamos +1 para ter o intervalo de 1 a 100
+/* src/javascript/exercicio1.js */
+const sortearNumero = () => {
+    // Math.random() é pseudo-aleatório, mas suficiente para jogos não-críticos
+    // O +1 garante que o intervalo seja inclusivo [1, 100]
     return Math.floor(Math.random() * 100) + 1;
+};
+```
+
+### 💰 Exercício 2: Validador de Regras de Negócio
+Garante a integridade financeira da transação antes de processá-la.
+
+```javascript
+/* src/javascript/exercicio2.js */
+function podeApostar(saldoAtual, custoAposta) {
+    // Validação negativa primeiro (Fail Fast)
+    if (custoAposta <= 0) return false;
+    
+    // Retorna o resultado booleano direto
+    return saldoAtual >= custoAposta;
 }
 ```
 
-### Exercício 2: Validação de Aposta
+### 🏆 Exercício 3: Analytics de Vitórias
+Processamento de dados utilizando Programação Funcional (`.filter`).
+
 ```javascript
-function validarAposta(saldo, valorAposta) {
-    // Verifica se a aposta ou saldo são inválidos (menores ou iguais a zero/negativo)
-    if (valorAposta <= 0 || saldo < 0) {
-        return false;
-    }
-    // Retorna true se o saldo for maior ou igual a aposta
-    return saldo >= valorAposta;
+/* src/javascript/exercicio3.js */
+const calcularScore = (historicoPartidas) => {
+    if (!historicoPartidas?.length) return 0; // Null Safety
+    
+    // Abordagem declarativa: "O que eu quero" (filtrar ganhos) vs "Como fazer" (loops for)
+    return historicoPartidas.filter(status => status === 'ganhou').length;
+};
+```
+
+### 🔢 Exercício 4: Motor de Cálculo (Strategy Pattern Simplificado)
+Calcula payouts dinâmicos baseados no tipo de jogo, evitando magic numbers.
+
+```javascript
+/* src/javascript/exercicio4.js */
+const MULTIPLICADORES = {
+    'grupo': 18,
+    'animal': 2,
+    'padrao': 0
+};
+
+function calcularPayout(tipoAposta, valorInvestido) {
+    // Fallback para 'padrao' se o tipo não existir no dicionário
+    const fator = MULTIPLICADORES[tipoAposta] || MULTIPLICADORES['padrao'];
+    return valorInvestido * fator;
 }
 ```
 
-### Exercício 3: Contador de Vitórias
-```javascript
-function contarVitorias(resultados) {
-    if (!resultados || resultados.length === 0) return 0;
+### 🕵️ Exercício 5: Filtragem de High Rollers
+Extração de dados qualificados de uma massa de usuários.
 
-    // Filtra apenas os itens que são 'ganhou' e conta o tamanho da lista filtrada
-    const vitorias = resultados.filter(resultado => resultado === 'ganhou');
-    return vitorias.length;
+```javascript
+/* src/javascript/exercicio5.js */
+function encontrarJogadoresVIP(listaJogadores, saldoMinimo) {
+    // Imutabilidade: Retorna uma nova lista sem alterar a original
+    return listaJogadores.filter(p => p.saldo >= saldoMinimo);
 }
 ```
 
-### Exercício 4: Cálculo de Prêmio
+---
+
+## 💎 Bônus: Sistema de Rifa Completo
+
+Este módulo foi implementado como uma **Classe Funcional**, encapsulando estado e comportamento. Isso facilita testes unitários e manutenção futura.
+
 ```javascript
-function calcularPremio(tipoAcerto, valorAposta) {
-    let multiplicador = 0;
+/**
+ * src/javascript/desafio_rifa.js
+ * 
+ * Sistema de Gestão de Rifas v1.0
+ * Features: Controle de vendas, verificação de duplicidade e sorteio justo.
+ */
 
-    if (tipoAcerto === 'grupo') {
-        multiplicador = 18;
-    } else if (tipoAcerto === 'animal') {
-        multiplicador = 2;
-    } else {
-        // Se 'nenhum' ou qualquer outra coisa, multiplicador continua 0
-        multiplicador = 0;
-    }
+const criarRifaService = (totalBilhetes = 100) => {
+    // Estado privado (Closure)
+    const _vendidos = new Set(); // Set garante unicidade O(1)
+    let _isOpen = true;
 
-    return valorAposta * multiplicador;
-}
-```
-
-### Exercício 5: Lista de Jogadores
-```javascript
-function filtrarJogadores(jogadores, valorMinimo) {
-    // O método filter cria um novo array apenas com os elementos que retornam true na condição
-    return jogadores.filter(jogador => jogador.saldo >= valorMinimo);
-}
-```
-
-### Desafio Final: Sistema de Rifas
-```javascript
-// 1. Criar rifa
-function criarRifa(totalBilhetes) {
     return {
-        total: totalBilhetes,
-        vendidos: [], // Armazena os números já comprados
-        aberta: true
+        vender: (numero) => {
+            if (!_isOpen) throw new Error("Sorteio encerrado.");
+            if (numero < 1 || numero > totalBilhetes) throw new Error("Número inválido.");
+            if (_vendidos.has(numero)) throw new Error("Bilhete indisponível.");
+
+            _vendidos.add(numero);
+            return { sucesso: true, msg: `Bilhete ${numero} confirmado.` };
+        },
+
+        sortear: () => {
+            if (_vendidos.size === 0) return null;
+            
+            const arrayVendas = Array.from(_vendidos);
+             // Sorteio justo baseado nos vendidos
+            const index = Math.floor(Math.random() * arrayVendas.length);
+            
+            _isOpen = false; // Fecha a rifa após sorteio
+            return arrayVendas[index];
+        },
+        
+        getStatus: () => ({ total: totalBilhetes, vendidos: _vendidos.size })
     };
-}
-
-// 2. Vender bilhete
-function venderBilhete(rifa, numeroBilhete) {
-    if (!rifa.aberta) return "Rifa fechada.";
-    
-    // Validações
-    if (numeroBilhete < 1 || numeroBilhete > rifa.total) {
-        console.log(`Erro: Bilhete ${numeroBilhete} inválido.`);
-        return false;
-    }
-    if (rifa.vendidos.includes(numeroBilhete)) {
-        console.log(`Erro: Bilhete ${numeroBilhete} já vendido.`);
-        return false;
-    }
-
-    rifa.vendidos.push(numeroBilhete);
-    console.log(`Bilhete ${numeroBilhete} vendido com sucesso!`);
-    return true;
-}
-
-// 3. Sortear ganhador
-function sortearGanhador(rifa) {
-    if (rifa.vendidos.length === 0) {
-        return "Não há bilhetes vendidos para sortear.";
-    }
-
-    // Escolhe um índice aleatório dentro da lista de vendidos
-    const indiceAleatorio = Math.floor(Math.random() * rifa.vendidos.length);
-    const numeroSorteado = rifa.vendidos[indiceAleatorio];
-    
-    return numeroSorteado;
-}
+};
 ```
+
+---
+
+<div align="center">
+  <img src="https://media.giphy.com/media/26tn33aiTi1jkl6H6/giphy.gif" width="50" />
+  <br/>
+  <sub><i>"Technology is best when it brings people together."</i></sub>
+</div>
