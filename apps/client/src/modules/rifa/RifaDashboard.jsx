@@ -103,9 +103,21 @@ export default function RifaDashboard({ isAuthenticated, onRequestLogin, onLogou
     const [showAdminPanel, setShowAdminPanel] = useState(false);
     const [showSettings, setShowSettings] = useState(false);
 
-    // State for dynamic configuration (Admin only)
-    const [ticketCount, setTicketCount] = useState(50);
-    const [prizeValue, setPrizeValue] = useState(200);
+    // State for dynamic configuration (Admin only) - Persisted in LocalStorage
+    const [ticketCount, setTicketCount] = useState(() => {
+        const saved = localStorage.getItem('royal_rifa_ticketCount');
+        return saved ? Number(saved) : 50;
+    });
+    const [prizeValue, setPrizeValue] = useState(() => {
+        const saved = localStorage.getItem('royal_rifa_prizeValue');
+        return saved ? Number(saved) : 200;
+    });
+
+    // Save config changes
+    useEffect(() => {
+        localStorage.setItem('royal_rifa_ticketCount', ticketCount);
+        localStorage.setItem('royal_rifa_prizeValue', prizeValue);
+    }, [ticketCount, prizeValue]);
 
     const [soldTickets, setSoldTickets] = useState([]);
     const [isDrawing, setIsDrawing] = useState(false);
@@ -144,6 +156,11 @@ export default function RifaDashboard({ isAuthenticated, onRequestLogin, onLogou
 
     const resetRaffle = async () => {
         if (!isAuthenticated) return;
+
+        if (!window.confirm("⚠️ TEM CERTEZA QUE DESEJA LIMPAR O SORTEIO?\n\nIsso apagará todos os bilhetes vendidos e preparará o sistema para uma nova rodada.")) {
+            return;
+        }
+
         await supabase.from('bilhetes').delete().neq('id', 0);
     };
 
@@ -267,7 +284,7 @@ export default function RifaDashboard({ isAuthenticated, onRequestLogin, onLogou
                 <div className="flex justify-end gap-3 pt-6 border-t border-white/5">
                     {isAuthenticated && (
                         <button onClick={resetRaffle} className="px-6 py-3 rounded-xl border border-red-500/30 text-red-400 hover:bg-red-500/10 flex items-center gap-2">
-                            <RotateCcw size={18} /> Admin: Resetar Ciclo
+                            <RotateCcw size={18} /> Novo Sorteio
                         </button>
                     )}
 

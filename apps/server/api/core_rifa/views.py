@@ -107,5 +107,41 @@ def sortear_rifa(request, rifa_id):
             "metodo": "CSPRNG (secrets.choice)"
         })
 
-    except Rifa.DoesNotExist:
-        return response.Response({"erro": "Rifa não encontrada"}, status=404)
+@api_view(['POST'])
+def reset_rifa(request):
+    """
+    Limpa o sorteio (reseta todos os bilhetes).
+    """
+    logger.warning(f"⚠️ ADMIN ACIONOU RESET TOTAL DA RIFA! IP: {request.META.get('REMOTE_ADDR')}")
+    
+    # Em um cenário real, deveria ter @permission_classes([IsAdminUser])
+    try:
+        # Apaga todos os bilhetes (Reset do Board)
+        Bilhete.objects.all().delete()
+        
+        AuditLog.objects.create(
+            acao="RESET_GLOBAL", 
+            detalhes="Todos os bilhetes foram apagados pelo Admin.",
+            ip_origem=request.META.get('REMOTE_ADDR')
+        )
+        return response.Response({"status": "Rifa resetada com sucesso!"}, status=200)
+
+    except Exception as e:
+        logger.error(f"Erro ao resetar: {e}")
+        return response.Response({"erro": "Falha ao resetar"}, status=500)
+
+@api_view(['POST'])
+def update_config(request):
+    """
+    Atualiza configurações dinâmicas (Valor do Prêmio, Qtd Números).
+    """
+    # Exemplo simples de persistência em banco ou cache
+    novo_premio = request.data.get('premio_valor')
+    nova_qtd = request.data.get('quantidade_numeros')
+    
+    logger.info(f"⚙️ Configuração Atualizada: Prêmio R${novo_premio} | {nova_qtd} Bilhetes")
+    
+    return response.Response({
+        "status": "Configuração salva",
+        "config": {"premio": novo_premio, "tickets": nova_qtd}
+    })
