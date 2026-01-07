@@ -94,7 +94,7 @@ python -m pytest
 ```bash
 📦 Teste_Tecnico_Pamela_Menezes
  ┣ 📂 src
- ┃ ┣ 📂 frontend_react_rifa   # Modern Interface (SPA)
+ ┃ ┣ 📂 Rifa_Real             # Frontend Moderno (SPA)
  ┃ ┃ ┣ 📂 src
  ┃ ┃ ┃ ┣ 📜 App.jsx          # Reactive Logic & Animations
  ┃ ┃ ┃ ┗ 📜 main.jsx         # DOM Entry Point

@@ -94,7 +94,7 @@ Guia rápido para navegar pela estrutura e documentação deste repositório:
 
 | Arquivo / Pasta | Descrição & Função |
 | :--- | :--- |
-| **`src/frontend_react_rifa/`** | **Frontend Moderno:** Aplicação React + Vite + Tailwind. Contém a UI interativa, animações (Framer Motion) e lógica de visualização. |
+| **`src/Rifa_Real/`** | **Frontend Moderno:** Aplicação React + Vite + Tailwind. Contém a UI interativa, animações (Framer Motion) e lógica de visualização. |
 | **`src/javascript/`** | **Core Logic (Node.js):** Implementação da lógica de rifa usando padrões de projeto (Singleton, Mutex) e segurança (Crypto). |
 | **`src/python_scripts/`** | **Backend Logic (Python):** Scripts de processamento de dados com tipagem forte (Dataclasses) e geração segura de números (Secrets). |
 | **`tests/`** | **QA & Testes:** Suíte de testes automatizados. `rifa.test.js` (Jest) para regras de negócio e `test_rifa.py` (Pytest) para segurança. |
