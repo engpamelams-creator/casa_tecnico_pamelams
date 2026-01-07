@@ -1,127 +1,75 @@
-# 📘 Technical Blueprint & Project Specifications
+# 📘 Visão Geral e Decisões Técnicas
 
 <div align="center">
-  <img src="https://capsule-render.vercel.app/api?type=waving&color=0d1117&height=200&section=header&text=Architectural%20Overview&fontSize=50&fontColor=ffffff&desc=Performance%20%7C%20Security%20%7C%20Scalability&descAlignY=60&descAlign=50" width="100%" />
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=0d1117&height=200&section=header&text=Vis%C3%A3o%20Geral&fontSize=50&fontColor=ffffff&desc=Performance%20%7C%20Seguran%C3%A7a%20%7C%20Simplicidade&descAlignY=60&descAlign=50" width="100%" />
 </div>
 
 <br />
 
-> **Project Status:** Production Ready (Enterprise Grade) 🚀
-> **Architecture:** Modular Monorepo (Nest.js Style)
-> **Core Focus:** Data Integrity, Hybrid Access Control, and Real-Time Synchronization.
+> **Status:** Pronto para Uso! 🚀
+> **O que é:** Um sistema completo de Rifas com sorteio real, seguro e ao vivo.
+> **Foco:** Ser rápido, confiável e fácil de entender.
 
 ---
 
-## 🏗️ Architectural Design (High Level)
+## 🏗️ Como pensei na Arquitetura
 
-Este projeto evoluiu para uma arquitetura de **Modular Monorepo**, inspirada em frameworks corporativos como Nest.js e Nx. Isso garante que o crescimento do software seja sustentável, com clara separação entre domínios.
+Decidi organizar o projeto de um jeito que fosse organizado, mas sem complicar demais. Em vez de criar vários lugares diferentes para código, coloquei tudo junto num projeto só, mas bem separado por responsabilidade.
 
-```mermaid
-graph TD
-    User((User Interaction)) --> |HTTPS/WSS| ClientApp[React Client (Apps/Client)]
-    ClientApp --> |Realtime Sync| SupabaseDB[(Supabase Postgres)]
-    ClientApp --> |Auth| SupabaseAuth[Supabase Auth]
-    
-    subgraph "Frontend Architecture (Modular)"
-        ClientApp --> CoreModule[Core Module]
-        ClientApp --> AuthModule[Auth Module]
-        ClientApp --> RifaModule[Rifa Module]
-        ClientApp --> SharedModule[Shared UI/Hooks]
-    end
+Basicamente, o sistema funciona em três partes que conversam entre si:
 
-    subgraph "Backend Architecture (Django)"
-        DjangoAPI[Django Rest Framework] --> |Concurrency Control| DB_Lock[Row Level Locking]
-        DjangoAPI --> |Audit| AuditLog[Audit Logs]
-    end
-```
+1.  **O que o usuário vê (Frontend):** A tela bonita onde as pessoas compram números.
+2.  **O cérebro (Backend):** Onde ficam as regras de segurança e o sorteio.
+3.  **O cofre (Banco de Dados):** Onde guardamos os bilhetes vendidos e os ganhadores.
 
 ---
 
-## 🛠️ Technology Stack & Decision Records (ADRs)
+## 🛠️ Tecnologias que escolhi (e o porquê)
 
-### 1. Frontend: Modular React (Nest.js Style)
-*   **Structure:** `apps/client` organizado em módulos (`auth`, `rifa`, `shared`, `core`).
-*   **Engine:** `Vite` (ESBuild) para bundling instantâneo.
-*   **UI Library:** `Framer Motion` + `Tailwind CSS v3` (JIT) para interfaces fluidas e performáticas.
-*   **Real-time:** `Supabase Realtime` (WebSockets) para sincronização instantânea de estado entre múltiplos clientes (Multiplayer).
+### 1. Frontend: React + Vite
+Escolhi o **React** porque é a tecnologia mais moderna hoje para criar telas que não travam. O **Vite** foi para deixar o projeto leve e rápido de rodar.
+*   **O "Pulo do Gato":** Usei uma tecnologia de **Tempo Real** (WebSockets). Isso significa que, se você comprar o número 10 agora, ele fica vermelho na tela de todo mundo que estiver no site na mesma hora. Parece mágica, mas é tecnologia.
 
-### 2. Backend: Django Enterprise Layer
-*   **Framework:** `Django` + `Django REST Framework` (DRF).
-*   **Security:** `transaction.atomic` e `select_for_update` para garantir consistência em ambientes de alta concorrência.
-*   **Docs:** `Swagger/Redoc` (drf-yasg) para documentação automática de API.
+### 2. Backend: Python com Django
+Para garantir que o sorteio seja sério, não confiei apenas no navegador. Mantive uma camada segura em **Python**. O **Django** é muito robusto e me ajuda a garantir que as regras sejam seguidas.
+*   **Sem Confusão:** Usei um sistema de travas no banco de dados. Isso impede aquele erro chato de duas pessoas clicarem no mesmo número ao mesmo tempo e o sistema vender duplicado. Aqui, o primeiro leva e o segundo é avisado.
 
-### 3. Database & Auth: Supabase (PostgreSQL)
-*   **Auth:** Integração nativa com Supabase Auth para gestão de sessões seguras.
-*   **RLS (Row Level Security):** Políticas de segurança a nível de banco de dados para proteger dados sensíveis.
+### 3. Banco de Dados: Supabase
+Em vez de configurar servidores complexos do zero, usei o **Supabase**. Ele já me dá o banco de dados pronto e ainda cuida de toda a parte de Login (Autenticação), o que me poupou muito tempo para focar no que importa: a Rifa.
 
 ---
 
-## 🛡️ Engineering Differentiators (Deep Dive)
+## 🛡️ O que torna esse projeto especial?
 
-### 🔐 Hybrid Access Control (RBAC Lite)
-Implementamos um sistema de acesso híbrido sofisticado:
-1.  **Public Layer:** Acesso irrestrito para visualização e compra (High Availability).
-2.  **Protected Layer:** Painel Administrativo acessível apenas via autenticação segura. O sistema verifica a sessão e libera funcionalidades críticas (Reset, Dashboard Financeiro) dinamicamente.
+### 🔐 Acesso Híbrido (Público x Admin)
+Fiz uma lógica interessante aqui:
+1.  **Para todos:** A página principal é aberta. Qualquer pessoa pode entrar, ver os prêmios e participar.
+2.  **Só para mim:** Criei uma área administrativa oculta. Quando eu faço login com minha senha, o sistema libera botões extras que só eu vejo (como o botão de "Resetar Rifa" ou ver o histórico financeiro).
 
-### 🚦 Concurrency & Race Conditions
-Para mitigar o problema do "Double Spending" (dois usuários comprando o mesmo bilhete no mesmo milissegundo):
-*   **Frontend:** Otimistic Updates com rollback em caso de falha.
-*   **Backend:** Locks de banco de dados (`FOR UPDATE`) garantem que apenas uma transação modifique o estado do bilhete por vez.
-
-### 🎲 Cryptographically Secure PRNG (CSPRNG)
-Sorteios não utilizam `Math.random()` inseguro.
-*   **Python:** Módulo `secrets` para entropia do sistema operacional, invulnerável a ataques de predição.
+### 🎲 Sorteio Honesto e Seguro
+Muitos sistemas simples usam sorteios que dão para "adivinhar" se você souber a hora exata. Aqui não.
+Usei uma biblioteca especial do Python chamada `secrets`. Ela usa a aleatoriedade do próprio sistema operacional para gerar o número vencedor. É matematicamente impossível prever o resultado. É justo de verdade.
 
 ---
 
-## 🎯 Quality Assurance (QA) & Testing Strategy
+## 📂 Como organizei as pastas
 
-A confiabilidade é assegurada por testes automatizados em ambas as pontas do sistema.
+Tentei deixar tudo muito fácil de achar dentro da pasta `apps`:
 
-### 🧪 Frontend & Integration (Jest)
-*   **Realtime Simulation:** Testes que validam a chegada de eventos WebSocket.
-*   **Component Isolation:** Testes unitários dos módulos `auth` e `rifa` de forma isolada.
-
-### 🐍 Backend Logic (Pytest)
-*   **Transaction Integrity:** Testes que tentam forçar Race Conditions para validar os Locks.
-*   **Security Audit:** Verificação da geração de chaves e integridade dos dados.
+*   📂 `apps/client`: Aqui fica todo o **Site** (React). Telas, cores, botões.
+*   📂 `apps/server`: Aqui fica a **Lógica** (Python). As regras do sorteio.
+*   📂 `infra`: Aqui ficam os arquivos de configuração do banco de dados.
 
 ---
 
-## 📂 Project Directory Structure (Monorepo)
-
-A estrutura foi refatorada para suportar escala infinita:
-
-```bash
-📦 Teste_Tecnico_Pamela_Menezes
- ┣ 📂 apps                      # Application Layer
- ┃ ┣ 📂 client                  # React Frontend
- ┃ ┃ ┣ 📂 src
- ┃ ┃ ┃ ┣ 📂 modules             # Feature Modules (Domain functionality)
- ┃ ┃ ┃ ┃ ┣ 📂 auth              # Login & Security
- ┃ ┃ ┃ ┃ ┗ 📂 rifa              # Core Business Logic
- ┃ ┃ ┃ ┣ 📂 shared              # Reusable Components & Hooks
- ┃ ┃ ┃ ┗ 📂 core                # Global Configuration (Supabase)
- ┃ ┗ 📂 server                  # Python Backend Logic
- ┃ ┃ ┣ 📂 api                   # Django Project
- ┃ ┃ ┗ 📂 scripts               # Standalone Scripts
- ┣ 📂 infra                     # Infrastructure Layer
- ┃ ┗ 📂 database                # SQL Scripts & Migrations
- ┣ 📂 tests                     # QA Automation Suite
- ┣ 📜 INFO_PROJETOS.md          # Technical Documentation
- ┗ 📜 README.md                 # Executive Summary
-```
-
----
-
-## 🚀 Scalability Roadmap
-
-1.  **Microservices:** Extrair o módulo de autenticação para um serviço isolado.
-2.  **CI/CD:** Pipelines no GitHub Actions para deploy automático no Netlify (Front) e Railway (Back).
-3.  **Analytics:** Integração com PostHog para monitoramento de comportamento do usuário.
+## 🚀 Próximos Passos
+Se eu fosse continuar melhorando esse projeto amanhã, eu faria:
+1.  **Pagamento Real:** Integraria com o Pix para liberar o bilhete só depois do pagamento.
+2.  **Gráficos:** Colocaria um gráfico para ver quais dias vendemos mais.
+3.  **Chat:** Talvez um chat para as pessoas conversarem durante o sorteio.
 
 <br />
 
 <div align="center">
-  <sub>Engineered by <strong>Dev Pamela M.S</strong></sub>
+  <sub>Desenvolvido com carinho por <strong>Pamela M.S</strong></sub>
 </div>
