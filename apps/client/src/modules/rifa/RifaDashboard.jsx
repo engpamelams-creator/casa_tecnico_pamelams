@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import confetti from 'canvas-confetti';
 import { Trophy, RotateCcw, Crown, Sparkles, LayoutDashboard, LogOut, History, Calendar, UserCircle } from 'lucide-react';
-import { supabase } from '../../../core/supabaseClient';
+import { supabase } from '../../core/supabaseClient';
 import { useAudio } from '../../shared/hooks/useAudio';
 
 const DashboardHistory = ({ onClose }) => {

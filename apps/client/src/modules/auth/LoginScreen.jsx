@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Lock, ArrowLeft } from 'lucide-react';
-import { supabase } from '../../../core/supabaseClient';
+import { supabase } from '../../core/supabaseClient';
 
 export const LoginScreen = ({ onLogin, onBack }) => {
     // TODO: Move these hardcoded credentials to Supabase Auth Policies entirely or env vars for dev
