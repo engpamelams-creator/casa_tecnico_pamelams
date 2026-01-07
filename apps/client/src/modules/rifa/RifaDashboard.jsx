@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import confetti from 'canvas-confetti';
-import { Trophy, RotateCcw, Crown, Sparkles, LayoutDashboard, LogOut, History, Calendar, UserCircle } from 'lucide-react';
+import { Trophy, RotateCcw, Crown, Sparkles, LayoutDashboard, LogOut, History, Calendar, UserCircle, Settings, X } from 'lucide-react';
 import { supabase } from '../../core/supabaseClient';
 import { useAudio } from '../../shared/hooks/useAudio';
 
@@ -55,8 +55,53 @@ const DashboardHistory = ({ onClose }) => {
     );
 };
 
+const SettingsModal = ({ onClose, ticketCount, setTicketCount, prizeValue, setPrizeValue }) => {
+    return (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+            <motion.div
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                className="bg-zinc-900 border border-yellow-500/20 p-6 rounded-2xl w-full max-w-sm shadow-2xl relative"
+            >
+                <div className="flex justify-between items-center mb-6">
+                    <h3 className="text-xl font-bold text-white flex items-center gap-2">
+                        <Settings className="text-yellow-500" size={20} /> Configuração
+                    </h3>
+                    <button onClick={onClose} className="text-zinc-500 hover:text-white"><X size={20} /></button>
+                </div>
+
+                <div className="space-y-4">
+                    <div>
+                        <label className="text-xs text-zinc-500 uppercase font-bold block mb-2">Quantidade de Números</label>
+                        <input
+                            type="number"
+                            value={ticketCount}
+                            onChange={e => setTicketCount(Number(e.target.value))}
+                            className="w-full bg-black/50 border border-zinc-700 rounded-lg p-3 text-white focus:border-yellow-500 outline-none font-mono"
+                        />
+                    </div>
+                    <div>
+                        <label className="text-xs text-zinc-500 uppercase font-bold block mb-2">Valor do Prêmio (R$)</label>
+                        <input
+                            type="number"
+                            value={prizeValue}
+                            onChange={e => setPrizeValue(Number(e.target.value))}
+                            className="w-full bg-black/50 border border-zinc-700 rounded-lg p-3 text-white focus:border-yellow-500 outline-none font-mono"
+                        />
+                    </div>
+                </div>
+
+                <button onClick={onClose} className="w-full mt-6 bg-yellow-500 text-black font-bold py-3 rounded-lg hover:bg-yellow-400 transition-colors">
+                    Salvar Alterações
+                </button>
+            </motion.div>
+        </div>
+    );
+};
+
 export default function RifaDashboard({ isAuthenticated, onRequestLogin, onLogout }) {
     const [showAdminPanel, setShowAdminPanel] = useState(false);
+    const [showSettings, setShowSettings] = useState(false);
 
     // State for dynamic configuration (Admin only)
     const [ticketCount, setTicketCount] = useState(50);
@@ -86,10 +131,6 @@ export default function RifaDashboard({ isAuthenticated, onRequestLogin, onLogou
 
         // Initial fetch
         supabase.from('bilhetes').select('numero').then(({ data, error }) => {
-            if (error) {
-                console.error('Initial sync failed:', error);
-                return;
-            }
             if (data) setSoldTickets(data.map(t => t.numero));
         });
 
@@ -97,21 +138,12 @@ export default function RifaDashboard({ isAuthenticated, onRequestLogin, onLogou
     }, []);
 
     const purchaseTicket = async (ticketNumber) => {
-        // Optimistic UI check (prevent double click)
         if (soldTickets.includes(ticketNumber)) return;
-
-        // DB Insert - Database rules will reject duplicates if race condition occurs
         const { error } = await supabase.from('bilhetes').insert([{ numero: ticketNumber }]);
-        if (error) {
-            console.warn('Race condition detected or duplicate purchase for ticket:', ticketNumber);
-        }
     };
 
     const resetRaffle = async () => {
         if (!isAuthenticated) return;
-
-        // Hard delete all tickets to start fresh
-        // FIXME: We should probably soft-delete or archive this data instead of truncating
         await supabase.from('bilhetes').delete().neq('id', 0);
     };
 
@@ -120,10 +152,8 @@ export default function RifaDashboard({ isAuthenticated, onRequestLogin, onLogou
 
         setIsDrawing(true);
 
-        // Suspense effect
         await new Promise(resolve => setTimeout(resolve, 3000));
 
-        // Secure Random using browser Crypto API (Serverless & Secure)
         const array = new Uint32Array(1);
         window.crypto.getRandomValues(array);
         const randomIndex = array[0] % soldTickets.length;
@@ -134,24 +164,29 @@ export default function RifaDashboard({ isAuthenticated, onRequestLogin, onLogou
         playWinSound();
         confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#FFD700', '#FFFFFF'] });
 
-        // Persist winner
         await supabase.from('historico_vencedores').insert([{ numero_sorteado: winnerTicket, premio_valor: prizeValue }]);
     };
 
     return (
         <div className="min-h-screen bg-[#09090b] text-white p-6 flex flex-col items-center justify-center font-sans relative overflow-hidden">
-            {/* Background noise effect (CSS Radial Gradient - Network Safe) */}
-            <div className="absolute inset-0 z-0 opacity-20 pointer-events-none animate-spin-slow" style={{
-                background: 'radial-gradient(circle at 50% 50%, rgba(234, 179, 8, 0.15) 0%, transparent 50%), repeating-linear-gradient(45deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 10px)'
-            }}></div>
+            {/* 1. Background Animado Restaurado (Mais visível e Z-Index correto) */}
+            <div className="fixed inset-0 z-0 pointer-events-none">
+                <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-yellow-900/20 via-[#09090b] to-[#09090b]"></div>
+                <div className="absolute top-[-50%] left-[-50%] w-[200%] h-[200%] bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 animate-spin-slow"></div>
+            </div>
 
             {/* Version Indicator */}
-            <div className="fixed bottom-2 right-2 text-[10px] text-zinc-800 font-mono z-50">v2.1 (Live)</div>
+            <div className="fixed bottom-2 right-2 text-[10px] text-zinc-800 font-mono z-50">v2.2 (Rifa Real)</div>
 
             {/* Top Navigation */}
             <div className="fixed top-6 right-6 z-40 flex gap-2">
                 {isAuthenticated ? (
                     <>
+                        {/* 2. Botão de Configurações (Engrenagem) Restaurado */}
+                        <button onClick={() => setShowSettings(true)} className="flex items-center gap-2 px-3 py-2 bg-zinc-800 text-zinc-400 hover:text-white hover:bg-zinc-700 rounded-full transition-colors border border-white/5">
+                            <Settings size={18} />
+                        </button>
+
                         <button onClick={() => setShowAdminPanel(true)} className="flex items-center gap-2 px-4 py-2 bg-yellow-500/10 text-yellow-500 border border-yellow-500/50 hover:bg-yellow-500/20 rounded-full text-sm transition-colors">
                             <LayoutDashboard size={16} /> Admin
                         </button>
@@ -168,6 +203,13 @@ export default function RifaDashboard({ isAuthenticated, onRequestLogin, onLogou
 
             <AnimatePresence>
                 {isAuthenticated && showAdminPanel && <DashboardHistory onClose={() => setShowAdminPanel(false)} />}
+                {isAuthenticated && showSettings && (
+                    <SettingsModal
+                        onClose={() => setShowSettings(false)}
+                        ticketCount={ticketCount} setTicketCount={setTicketCount}
+                        prizeValue={prizeValue} setPrizeValue={setPrizeValue}
+                    />
+                )}
             </AnimatePresence>
 
             <motion.div className="w-full max-w-5xl bg-zinc-900/60 backdrop-blur-2xl border border-white/5 rounded-3xl p-8 shadow-2xl relative z-10">
@@ -183,27 +225,14 @@ export default function RifaDashboard({ isAuthenticated, onRequestLogin, onLogou
                     </div>
 
                     <div className="flex flex-wrap gap-4 mt-6 md:mt-0 items-end justify-end">
-                        {isAuthenticated && (
-                            <div className="bg-black/20 p-4 rounded-xl border border-white/5 text-right w-32">
-                                <p className="text-xs text-zinc-500 uppercase mb-1">CONFIG. NÚMEROS</p>
-                                <input
-                                    type="number"
-                                    value={ticketCount}
-                                    onChange={e => setTicketCount(Number(e.target.value))}
-                                    className="bg-transparent w-full text-right font-mono font-bold text-white focus:outline-none border-b border-white/20 focus:border-yellow-500 transition-colors"
-                                />
-                            </div>
-                        )}
+                        <div className="bg-black/20 p-4 rounded-xl border border-white/5 text-right w-32">
+                            <p className="text-xs text-zinc-500 uppercase mb-1">NUMERAÇÃO</p>
+                            <p className="text-xl font-mono font-bold text-white">1 - {ticketCount}</p>
+                        </div>
 
                         <div className="bg-black/20 p-4 rounded-xl border border-white/5 text-right">
                             <p className="text-xs text-zinc-500 uppercase mb-1">PRÊMIO ATUAL</p>
-                            {isAuthenticated ? (
-                                <div className="flex items-center justify-end gap-1 text-yellow-400 font-bold text-xl">
-                                    R$ <input type="number" value={prizeValue} onChange={e => setPrizeValue(Number(e.target.value))} className="bg-transparent w-24 text-right focus:outline-none border-b border-yellow-500/50 focus:border-yellow-500" />
-                                </div>
-                            ) : (
-                                <p className="text-yellow-400 font-bold text-xl">R$ {prizeValue}</p>
-                            )}
+                            <p className="text-yellow-400 font-bold text-xl">R$ {prizeValue}</p>
                         </div>
 
                         <div className="bg-black/20 p-4 rounded-xl border border-white/5 text-right">
