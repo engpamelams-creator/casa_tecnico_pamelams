@@ -241,7 +241,22 @@ export default function RifaDashboard({ isAuthenticated, onRequestLogin, onLogou
 
     const purchaseTicket = async (ticketNumber) => {
         if (soldTickets.includes(ticketNumber)) return;
+
+        // Otimistic update handling is done via realtime subscription, 
+        // but we handle the insert error to avoid console noise.
         const { error } = await supabase.from('bilhetes').insert([{ numero: ticketNumber }]);
+
+        if (error) {
+            // Ignore duplicate key error (code 23505) as it means ticket is already sold
+            if (error.code !== '23505') {
+                console.error('Error purchasing ticket:', error);
+            }
+        } else {
+            // Only play sound if insert was successful (meaning we bought it)
+            // Note: The click sound is also in the realtime listener, so we might want to remove it from there 
+            // or here to avoid double sound for the buyer. 
+            // For now, let's keep the sound in the listener for consistent feedback for everyone.
+        }
     };
 
     const resetRaffle = async () => {
@@ -306,27 +321,27 @@ export default function RifaDashboard({ isAuthenticated, onRequestLogin, onLogou
             <div className="fixed bottom-2 right-2 text-[10px] text-zinc-800 font-mono z-50">v2.2 (Rifa Real)</div>
 
             {/* Top Navigation */}
-            <div className="fixed top-6 right-6 z-40 flex gap-2">
+            <div className="fixed top-4 sm:top-6 right-4 sm:right-6 z-40 flex gap-1.5 sm:gap-2">
                 {/* Achievements Button */}
                 <AchievementsButton />
 
                 {/* Settings Button - Always Visible (Hybrid Mode) */}
-                <button onClick={() => setShowSettings(true)} className="flex items-center gap-2 px-3 py-2 bg-zinc-800 text-zinc-400 hover:text-white hover:bg-zinc-700 rounded-full transition-colors border border-white/5">
-                    <Settings size={18} />
+                <button onClick={() => setShowSettings(true)} className="flex items-center gap-2 px-2.5 sm:px-3 py-2 bg-zinc-800 text-zinc-400 hover:text-white hover:bg-zinc-700 rounded-full transition-colors border border-white/5 active:scale-95">
+                    <Settings size={16} className="sm:w-[18px] sm:h-[18px]" />
                 </button>
 
                 {isAuthenticated ? (
                     <>
-                        <button onClick={() => setShowAdminPanel(true)} className="flex items-center gap-2 px-4 py-2 bg-yellow-500/10 text-yellow-500 border border-yellow-500/50 hover:bg-yellow-500/20 rounded-full text-sm transition-colors">
-                            <LayoutDashboard size={16} /> Admin
+                        <button onClick={() => setShowAdminPanel(true)} className="flex items-center gap-2 px-3 sm:px-4 py-2 bg-yellow-500/10 text-yellow-500 border border-yellow-500/50 hover:bg-yellow-500/20 rounded-full text-xs sm:text-sm transition-colors active:scale-95">
+                            <LayoutDashboard size={14} className="sm:w-4 sm:h-4" /> <span className="hidden sm:inline">Admin</span>
                         </button>
-                        <button onClick={onLogout} className="px-4 py-2 bg-zinc-800 text-zinc-400 hover:text-white rounded-full text-sm flex gap-2 items-center">
-                            <LogOut size={16} /> Sair
+                        <button onClick={onLogout} className="px-3 sm:px-4 py-2 bg-zinc-800 text-zinc-400 hover:text-white rounded-full text-xs sm:text-sm flex gap-2 items-center active:scale-95">
+                            <LogOut size={14} className="sm:w-4 sm:h-4" /> <span className="hidden sm:inline">Sair</span>
                         </button>
                     </>
                 ) : (
-                    <button onClick={onRequestLogin} className="flex items-center gap-2 px-4 py-2 bg-zinc-800 hover:bg-zinc-700 border border-white/10 rounded-full text-sm transition-colors text-zinc-300">
-                        <UserCircle size={16} /> Área Restrita
+                    <button onClick={onRequestLogin} className="flex items-center gap-2 px-3 sm:px-4 py-2 bg-zinc-800 hover:bg-zinc-700 border border-white/10 rounded-full text-xs sm:text-sm transition-colors text-zinc-300 active:scale-95">
+                        <UserCircle size={14} className="sm:w-4 sm:h-4" /> <span className="hidden sm:inline">Área Restrita</span>
                     </button>
                 )}
             </div>
@@ -345,47 +360,47 @@ export default function RifaDashboard({ isAuthenticated, onRequestLogin, onLogou
                 )}
             </AnimatePresence>
 
-            <motion.div className="w-full max-w-5xl bg-zinc-900/60 backdrop-blur-2xl border border-white/5 rounded-3xl p-8 shadow-2xl relative z-10">
-                <header className="flex flex-col md:flex-row justify-between items-center mb-8 border-b border-white/5 pb-6">
-                    <div className="flex items-center gap-4">
-                        <div className="p-4 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-2xl shadow-lg shadow-yellow-500/20">
-                            <Crown className="text-black w-8 h-8" />
+            <motion.div className="w-full max-w-5xl bg-zinc-900/60 backdrop-blur-2xl border border-white/5 rounded-3xl p-4 sm:p-6 md:p-8 shadow-2xl relative z-10">
+                <header className="flex flex-col md:flex-row justify-between items-center mb-6 md:mb-8 border-b border-white/5 pb-4 md:pb-6">
+                    <div className="flex items-center gap-3 sm:gap-4 mb-4 md:mb-0">
+                        <div className="p-3 sm:p-4 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-2xl shadow-lg shadow-yellow-500/20">
+                            <Crown className="text-black w-6 h-6 sm:w-8 sm:h-8" />
                         </div>
                         <div>
-                            <h1 className="text-3xl font-bold tracking-tight text-white">ROYAL <span className="text-yellow-400">RIFA</span></h1>
-                            <p className="text-zinc-500 text-xs uppercase tracking-[0.3em] mt-1 font-medium">SISTEMA ABERTO</p>
+                            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">ROYAL <span className="text-yellow-400">RIFA</span></h1>
+                            <p className="text-zinc-500 text-[10px] sm:text-xs uppercase tracking-[0.2em] sm:tracking-[0.3em] mt-1 font-medium">SISTEMA ABERTO</p>
                         </div>
                     </div>
 
-                    <div className="flex flex-wrap gap-4 mt-6 md:mt-0 items-end justify-end">
-                        <div className="bg-black/20 p-4 rounded-xl border border-white/5 text-right w-32">
-                            <p className="text-xs text-zinc-500 uppercase mb-1">NUMERAÇÃO</p>
-                            <p className="text-xl font-mono font-bold text-white">1 - {ticketCount}</p>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3 md:gap-4 w-full md:w-auto">
+                        <div className="bg-black/20 p-3 sm:p-4 rounded-xl border border-white/5 text-center">
+                            <p className="text-[10px] sm:text-xs text-zinc-500 uppercase mb-1">NUMERAÇÃO</p>
+                            <p className="text-base sm:text-xl font-mono font-bold text-white">1-{ticketCount}</p>
                         </div>
 
-                        <div className="bg-black/20 p-4 rounded-xl border border-white/5 text-right">
-                            <p className="text-xs text-zinc-500 uppercase mb-1">PRÊMIO ATUAL</p>
-                            <p className="text-yellow-400 font-bold text-xl">R$ {prizeValue}</p>
+                        <div className="bg-black/20 p-3 sm:p-4 rounded-xl border border-white/5 text-center">
+                            <p className="text-[10px] sm:text-xs text-zinc-500 uppercase mb-1">PRÊMIO</p>
+                            <p className="text-yellow-400 font-bold text-base sm:text-xl">R$ {prizeValue}</p>
                         </div>
 
-                        <div className="bg-gradient-to-br from-green-500/20 to-green-600/10 p-4 rounded-xl border border-green-500/30 text-right">
-                            <p className="text-xs text-green-400 uppercase mb-1 font-bold">🎫 VALOR/NÚMERO</p>
-                            <p className="text-green-400 font-bold text-xl">R$ {unitPrice.toFixed(2)}</p>
+                        <div className="bg-gradient-to-br from-green-500/20 to-green-600/10 p-3 sm:p-4 rounded-xl border border-green-500/30 text-center">
+                            <p className="text-[10px] sm:text-xs text-green-400 uppercase mb-1 font-bold">🎫 VALOR</p>
+                            <p className="text-green-400 font-bold text-base sm:text-xl">R$ {unitPrice.toFixed(2)}</p>
                         </div>
 
-                        <div className="bg-black/20 p-4 rounded-xl border border-white/5 text-right">
-                            <p className="text-xs text-zinc-500 uppercase mb-1">BILHETES</p>
-                            <p className="text-xl font-mono font-bold text-white">{soldTickets.length}/{ticketCount}</p>
+                        <div className="bg-black/20 p-3 sm:p-4 rounded-xl border border-white/5 text-center">
+                            <p className="text-[10px] sm:text-xs text-zinc-500 uppercase mb-1">BILHETES</p>
+                            <p className="text-base sm:text-xl font-mono font-bold text-white">{soldTickets.length}/{ticketCount}</p>
                         </div>
 
-                        <div className="bg-gradient-to-br from-orange-500/20 to-orange-600/10 p-4 rounded-xl border border-orange-500/30 text-right">
-                            <p className="text-xs text-orange-400 uppercase mb-1 font-bold">💰 ARRECADADO</p>
-                            <p className="text-orange-400 font-bold text-xl">R$ {(soldTickets.length * unitPrice).toFixed(2)}</p>
+                        <div className="bg-gradient-to-br from-orange-500/20 to-orange-600/10 p-3 sm:p-4 rounded-xl border border-orange-500/30 text-center col-span-2 sm:col-span-1">
+                            <p className="text-[10px] sm:text-xs text-orange-400 uppercase mb-1 font-bold">💰 TOTAL</p>
+                            <p className="text-orange-400 font-bold text-base sm:text-xl">R$ {(soldTickets.length * unitPrice).toFixed(2)}</p>
                         </div>
                     </div>
                 </header>
 
-                <div className="grid grid-cols-5 sm:grid-cols-10 gap-3 mb-10">
+                <div className="grid grid-cols-4 xs:grid-cols-5 sm:grid-cols-8 md:grid-cols-10 gap-2 sm:gap-3 mb-6 sm:mb-10">
                     {Array.from({ length: ticketCount }, (_, i) => i + 1).map((num) => {
                         const isTaken = soldTickets.includes(num);
                         return (
@@ -394,14 +409,14 @@ export default function RifaDashboard({ isAuthenticated, onRequestLogin, onLogou
                                 onClick={() => purchaseTicket(num)}
                                 disabled={isTaken || isDrawing}
                                 className={`
-                  h-16 rounded-lg font-bold transition-all border relative flex flex-col items-center justify-center gap-0.5
+                  h-14 sm:h-16 md:h-18 rounded-lg font-bold transition-all border relative flex flex-col items-center justify-center gap-0.5 active:scale-95
                   ${isTaken
                                         ? 'bg-gradient-to-br from-orange-500 to-orange-600 text-white border-orange-400 cursor-not-allowed shadow-lg shadow-orange-500/20'
-                                        : 'bg-zinc-800/50 text-zinc-400 border-zinc-700/50 hover:border-yellow-500 hover:text-yellow-400'
+                                        : 'bg-zinc-800/50 text-zinc-400 border-zinc-700/50 hover:border-yellow-500 hover:text-yellow-400 active:bg-zinc-700/50'
                                     }
                 `}
                             >
-                                <span className="text-lg">{num}</span>
+                                <span className="text-base sm:text-lg">{num}</span>
                                 <span className={`text-[10px] font-semibold ${isTaken ? 'text-white/80' : 'text-green-400'}`}>
                                     R$ {unitPrice.toFixed(2)}
                                 </span>
@@ -410,15 +425,15 @@ export default function RifaDashboard({ isAuthenticated, onRequestLogin, onLogou
                     })}
                 </div>
 
-                <div className="flex justify-between items-center gap-3 pt-6 border-t border-white/5">
-                    <button onClick={resetRaffle} className="px-6 py-3 rounded-xl border border-red-500/30 text-red-400 hover:bg-red-500/10 flex items-center gap-2 transition-colors">
-                        <RotateCcw size={18} /> Reiniciar Tudo
+                <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 pt-4 sm:pt-6 border-t border-white/5">
+                    <button onClick={resetRaffle} className="px-4 sm:px-6 py-3 rounded-xl border border-red-500/30 text-red-400 hover:bg-red-500/10 flex items-center justify-center gap-2 transition-colors active:scale-95 text-sm sm:text-base">
+                        <RotateCcw size={16} className="sm:w-[18px] sm:h-[18px]" /> Reiniciar Tudo
                     </button>
 
                     <button
                         onClick={performDraw}
                         disabled={soldTickets.length === 0 || isDrawing}
-                        className="px-8 py-3 rounded-xl font-bold bg-yellow-500 text-black hover:bg-yellow-400 transition-colors shadow-lg shadow-yellow-500/10 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="px-6 sm:px-8 py-3 rounded-xl font-bold bg-yellow-500 text-black hover:bg-yellow-400 transition-colors shadow-lg shadow-yellow-500/10 disabled:opacity-50 disabled:cursor-not-allowed active:scale-95 text-sm sm:text-base"
                     >
                         {isDrawing ? 'Sorteando...' : 'Sortear Agora'}
                     </button>
@@ -427,30 +442,30 @@ export default function RifaDashboard({ isAuthenticated, onRequestLogin, onLogou
 
             <AnimatePresence>
                 {lastWinner && (
-                    <div className="fixed inset-0 z-30 flex items-center justify-center bg-black/90 backdrop-blur-md p-6">
-                        <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="text-center max-w-2xl">
-                            <h2 className="text-yellow-500 text-3xl font-bold mb-6">🏆 VENCEDOR IDENTIFICADO</h2>
+                    <div className="fixed inset-0 z-30 flex items-center justify-center bg-black/90 backdrop-blur-md p-4 sm:p-6">
+                        <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="text-center max-w-2xl w-full">
+                            <h2 className="text-yellow-500 text-2xl sm:text-3xl font-bold mb-4 sm:mb-6">🏆 VENCEDOR IDENTIFICADO</h2>
 
                             {lastWinner.name && (
-                                <div className="mb-4">
-                                    <p className="text-purple-400 text-sm uppercase font-bold mb-2">Nome do Ganhador</p>
-                                    <p className="text-5xl font-bold text-white mb-6">{lastWinner.name}</p>
+                                <div className="mb-3 sm:mb-4">
+                                    <p className="text-purple-400 text-xs sm:text-sm uppercase font-bold mb-2">Nome do Ganhador</p>
+                                    <p className="text-3xl sm:text-5xl font-bold text-white mb-4 sm:mb-6">{lastWinner.name}</p>
                                 </div>
                             )}
 
-                            <div className="mb-4">
-                                <p className="text-zinc-500 text-sm uppercase font-bold mb-2">Número Sorteado</p>
-                                <div className="text-9xl font-black text-white">{lastWinner.number}</div>
+                            <div className="mb-3 sm:mb-4">
+                                <p className="text-zinc-500 text-xs sm:text-sm uppercase font-bold mb-2">Número Sorteado</p>
+                                <div className="text-6xl sm:text-9xl font-black text-white">{lastWinner.number}</div>
                             </div>
 
-                            <div className="mt-8 p-6 bg-gradient-to-br from-yellow-500/20 to-yellow-600/10 border-2 border-yellow-500/50 rounded-2xl">
-                                <p className="text-yellow-400 text-sm uppercase font-bold mb-2">💰 Prêmio Total</p>
-                                <p className="text-6xl font-black text-yellow-400">R$ {lastWinner.prize.toFixed(2)}</p>
+                            <div className="mt-6 sm:mt-8 p-4 sm:p-6 bg-gradient-to-br from-yellow-500/20 to-yellow-600/10 border-2 border-yellow-500/50 rounded-2xl">
+                                <p className="text-yellow-400 text-xs sm:text-sm uppercase font-bold mb-2">💰 Prêmio Total</p>
+                                <p className="text-4xl sm:text-6xl font-black text-yellow-400">R$ {lastWinner.prize.toFixed(2)}</p>
                             </div>
 
                             <button
                                 onClick={() => setLastWinner(null)}
-                                className="mt-8 px-6 py-3 bg-zinc-800 hover:bg-zinc-700 text-white rounded-lg transition-colors"
+                                className="mt-6 sm:mt-8 px-6 py-3 bg-zinc-800 hover:bg-zinc-700 text-white rounded-lg transition-colors active:scale-95 w-full sm:w-auto"
                             >
                                 Fechar
                             </button>
