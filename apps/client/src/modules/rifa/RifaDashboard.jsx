@@ -55,7 +55,7 @@ const DashboardHistory = ({ onClose }) => {
     );
 };
 
-const SettingsModal = ({ onClose, ticketCount, setTicketCount, prizeValue, setPrizeValue, isAuthenticated }) => {
+const SettingsModal = ({ onClose, ticketCount, setTicketCount, prizeValue, setPrizeValue, unitPrice, setUnitPrice, drawByName, setDrawByName, isAuthenticated }) => {
     return (
         <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
             <motion.div
@@ -69,8 +69,6 @@ const SettingsModal = ({ onClose, ticketCount, setTicketCount, prizeValue, setPr
                     </h3>
                     <button onClick={onClose} className="text-zinc-500 hover:text-white"><X size={20} /></button>
                 </div>
-
-
 
                 <div className="space-y-4">
                     <div>
@@ -90,6 +88,32 @@ const SettingsModal = ({ onClose, ticketCount, setTicketCount, prizeValue, setPr
                             onChange={e => setPrizeValue(Number(e.target.value))}
                             className="w-full bg-black/50 border border-zinc-700 focus:border-yellow-500 rounded-lg p-3 text-white outline-none font-mono cursor-text"
                         />
+                    </div>
+                    <div>
+                        <label className="text-xs text-green-400 uppercase font-bold block mb-2">💰 Valor por Número (R$)</label>
+                        <input
+                            type="number"
+                            step="0.01"
+                            value={unitPrice}
+                            onChange={e => setUnitPrice(Number(e.target.value))}
+                            className="w-full bg-black/50 border border-green-700 focus:border-green-500 rounded-lg p-3 text-white outline-none font-mono cursor-text"
+                        />
+                    </div>
+
+                    <div className="pt-4 border-t border-white/10">
+                        <label className="flex items-center justify-between cursor-pointer">
+                            <span className="text-xs text-purple-400 uppercase font-bold">🎲 Sortear por Nome</span>
+                            <div className="relative">
+                                <input
+                                    type="checkbox"
+                                    checked={drawByName}
+                                    onChange={e => setDrawByName(e.target.checked)}
+                                    className="sr-only peer"
+                                />
+                                <div className="w-11 h-6 bg-zinc-700 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-purple-500 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
+                            </div>
+                        </label>
+                        <p className="text-[10px] text-zinc-600 mt-2">Quando ativado, sorteia um nome aleatório ao invés do número</p>
                     </div>
                 </div>
 
@@ -154,12 +178,22 @@ export default function RifaDashboard({ isAuthenticated, onRequestLogin, onLogou
         const saved = localStorage.getItem('royal_rifa_prizeValue');
         return saved ? Number(saved) : 200;
     });
+    const [unitPrice, setUnitPrice] = useState(() => {
+        const saved = localStorage.getItem('royal_rifa_unitPrice');
+        return saved ? Number(saved) : 10;
+    });
+    const [drawByName, setDrawByName] = useState(() => {
+        const saved = localStorage.getItem('royal_rifa_drawByName');
+        return saved === 'true';
+    });
 
     // Save config changes
     useEffect(() => {
         localStorage.setItem('royal_rifa_ticketCount', ticketCount);
         localStorage.setItem('royal_rifa_prizeValue', prizeValue);
-    }, [ticketCount, prizeValue]);
+        localStorage.setItem('royal_rifa_unitPrice', unitPrice);
+        localStorage.setItem('royal_rifa_drawByName', drawByName);
+    }, [ticketCount, prizeValue, unitPrice, drawByName]);
 
     const [soldTickets, setSoldTickets] = useState([]);
     const [isDrawing, setIsDrawing] = useState(false);
@@ -197,12 +231,15 @@ export default function RifaDashboard({ isAuthenticated, onRequestLogin, onLogou
     };
 
     const resetRaffle = async () => {
-        if (!isAuthenticated) return;
-
         if (!window.confirm("⚠️ TEM CERTEZA QUE DESEJA LIMPAR O SORTEIO?\n\nIsso apagará todos os bilhetes vendidos e preparará o sistema para uma nova rodada.")) {
             return;
         }
 
+        // Limpa o estado local imediatamente
+        setSoldTickets([]);
+        setLastWinner(null);
+
+        // Deleta do banco de dados
         await supabase.from('bilhetes').delete().neq('id', 0);
     };
 
@@ -218,7 +255,18 @@ export default function RifaDashboard({ isAuthenticated, onRequestLogin, onLogou
         const randomIndex = array[0] % soldTickets.length;
         const winnerTicket = soldTickets[randomIndex];
 
-        setLastWinner(winnerTicket);
+        // Gera nome aleatório se o modo estiver ativado
+        let winnerName = null;
+        if (drawByName) {
+            const firstNames = ['Ana', 'Bruno', 'Carlos', 'Daniela', 'Eduardo', 'Fernanda', 'Gabriel', 'Helena', 'Igor', 'Julia', 'Lucas', 'Maria', 'Nicolas', 'Olivia', 'Pedro', 'Rafaela', 'Samuel', 'Tatiana', 'Vitor', 'Yasmin'];
+            const lastNames = ['Silva', 'Santos', 'Oliveira', 'Souza', 'Costa', 'Ferreira', 'Rodrigues', 'Almeida', 'Nascimento', 'Lima', 'Araújo', 'Fernandes', 'Carvalho', 'Gomes', 'Martins', 'Rocha', 'Ribeiro', 'Alves', 'Pereira', 'Monteiro'];
+
+            const randomFirstName = firstNames[Math.floor(Math.random() * firstNames.length)];
+            const randomLastName = lastNames[Math.floor(Math.random() * lastNames.length)];
+            winnerName = `${randomFirstName} ${randomLastName}`;
+        }
+
+        setLastWinner({ number: winnerTicket, name: winnerName, prize: prizeValue });
         setIsDrawing(false);
         playWinSound();
         confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#FFD700', '#FFFFFF'] });
@@ -263,6 +311,8 @@ export default function RifaDashboard({ isAuthenticated, onRequestLogin, onLogou
                         onClose={() => setShowSettings(false)}
                         ticketCount={ticketCount} setTicketCount={setTicketCount}
                         prizeValue={prizeValue} setPrizeValue={setPrizeValue}
+                        unitPrice={unitPrice} setUnitPrice={setUnitPrice}
+                        drawByName={drawByName} setDrawByName={setDrawByName}
                         isAuthenticated={isAuthenticated}
                     />
                 )}
@@ -291,9 +341,19 @@ export default function RifaDashboard({ isAuthenticated, onRequestLogin, onLogou
                             <p className="text-yellow-400 font-bold text-xl">R$ {prizeValue}</p>
                         </div>
 
+                        <div className="bg-gradient-to-br from-green-500/20 to-green-600/10 p-4 rounded-xl border border-green-500/30 text-right">
+                            <p className="text-xs text-green-400 uppercase mb-1 font-bold">🎫 VALOR/NÚMERO</p>
+                            <p className="text-green-400 font-bold text-xl">R$ {unitPrice.toFixed(2)}</p>
+                        </div>
+
                         <div className="bg-black/20 p-4 rounded-xl border border-white/5 text-right">
                             <p className="text-xs text-zinc-500 uppercase mb-1">BILHETES</p>
                             <p className="text-xl font-mono font-bold text-white">{soldTickets.length}/{ticketCount}</p>
+                        </div>
+
+                        <div className="bg-gradient-to-br from-orange-500/20 to-orange-600/10 p-4 rounded-xl border border-orange-500/30 text-right">
+                            <p className="text-xs text-orange-400 uppercase mb-1 font-bold">💰 ARRECADADO</p>
+                            <p className="text-orange-400 font-bold text-xl">R$ {(soldTickets.length * unitPrice).toFixed(2)}</p>
                         </div>
                     </div>
                 </header>
@@ -307,25 +367,26 @@ export default function RifaDashboard({ isAuthenticated, onRequestLogin, onLogou
                                 onClick={() => purchaseTicket(num)}
                                 disabled={isTaken || isDrawing}
                                 className={`
-                  h-14 rounded-lg font-bold text-lg transition-all border relative
+                  h-16 rounded-lg font-bold transition-all border relative flex flex-col items-center justify-center gap-0.5
                   ${isTaken
-                                        ? 'bg-zinc-800 text-zinc-500 border-zinc-700 cursor-not-allowed'
+                                        ? 'bg-gradient-to-br from-orange-500 to-orange-600 text-white border-orange-400 cursor-not-allowed shadow-lg shadow-orange-500/20'
                                         : 'bg-zinc-800/50 text-zinc-400 border-zinc-700/50 hover:border-yellow-500 hover:text-yellow-400'
                                     }
                 `}
                             >
-                                {num}
+                                <span className="text-lg">{num}</span>
+                                <span className={`text-[10px] font-semibold ${isTaken ? 'text-white/80' : 'text-green-400'}`}>
+                                    R$ {unitPrice.toFixed(2)}
+                                </span>
                             </button>
                         );
                     })}
                 </div>
 
-                <div className="flex justify-end gap-3 pt-6 border-t border-white/5">
-                    {isAuthenticated && (
-                        <button onClick={resetRaffle} className="px-6 py-3 rounded-xl border border-red-500/30 text-red-400 hover:bg-red-500/10 flex items-center gap-2">
-                            <RotateCcw size={18} /> Novo Sorteio
-                        </button>
-                    )}
+                <div className="flex justify-between items-center gap-3 pt-6 border-t border-white/5">
+                    <button onClick={resetRaffle} className="px-6 py-3 rounded-xl border border-red-500/30 text-red-400 hover:bg-red-500/10 flex items-center gap-2 transition-colors">
+                        <RotateCcw size={18} /> Reiniciar Tudo
+                    </button>
 
                     <button
                         onClick={performDraw}
@@ -339,11 +400,33 @@ export default function RifaDashboard({ isAuthenticated, onRequestLogin, onLogou
 
             <AnimatePresence>
                 {lastWinner && (
-                    <div className="fixed inset-0 z-30 flex items-center justify-center bg-black/90 backdrop-blur-md">
-                        <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="text-center">
-                            <h2 className="text-yellow-500 text-2xl font-bold mb-4">VENCEDOR IDENTIFICADO</h2>
-                            <div className="text-9xl font-black text-white">{lastWinner}</div>
-                            <button onClick={() => setLastWinner(null)} className="mt-8 text-zinc-500 hover:text-white underline">Dispensar Aviso</button>
+                    <div className="fixed inset-0 z-30 flex items-center justify-center bg-black/90 backdrop-blur-md p-6">
+                        <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="text-center max-w-2xl">
+                            <h2 className="text-yellow-500 text-3xl font-bold mb-6">🏆 VENCEDOR IDENTIFICADO</h2>
+
+                            {lastWinner.name && (
+                                <div className="mb-4">
+                                    <p className="text-purple-400 text-sm uppercase font-bold mb-2">Nome do Ganhador</p>
+                                    <p className="text-5xl font-bold text-white mb-6">{lastWinner.name}</p>
+                                </div>
+                            )}
+
+                            <div className="mb-4">
+                                <p className="text-zinc-500 text-sm uppercase font-bold mb-2">Número Sorteado</p>
+                                <div className="text-9xl font-black text-white">{lastWinner.number}</div>
+                            </div>
+
+                            <div className="mt-8 p-6 bg-gradient-to-br from-yellow-500/20 to-yellow-600/10 border-2 border-yellow-500/50 rounded-2xl">
+                                <p className="text-yellow-400 text-sm uppercase font-bold mb-2">💰 Prêmio Total</p>
+                                <p className="text-6xl font-black text-yellow-400">R$ {lastWinner.prize.toFixed(2)}</p>
+                            </div>
+
+                            <button
+                                onClick={() => setLastWinner(null)}
+                                className="mt-8 px-6 py-3 bg-zinc-800 hover:bg-zinc-700 text-white rounded-lg transition-colors"
+                            >
+                                Fechar
+                            </button>
                         </motion.div>
                     </div>
                 )}
