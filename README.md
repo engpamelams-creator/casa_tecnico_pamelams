@@ -31,7 +31,7 @@
 
 Sou uma **Desenvolvedora Full Stack Júnior** pronta para minha primeira oportunidade fixa em uma empresa de tecnologia.
 
-Embora esteja buscando minha primeira posição CLT, não sou uma iniciante sem prática. Trago uma **bagagem de execução real**:
+Embora esteja buscando minha primeira posição CLT,/ ou Pj não sou uma iniciante sem prática. Trago uma **bagagem de execução real**:
 
 *   🚀 **Experiência Autônoma Comprovada:** Desenvolvi soluções completas para empresas e negócios locais, entregando desde automações em Python até plataformas Web complexas.
 *   📦 **Mão na Massa (Hands-on):** Tenho um portfólio rico de projetos pessoais e de estudo que simulam cenários reais de mercado (e-commerces, sistemas de gestão, dashboards).
@@ -108,4 +108,5 @@ Guia rápido para navegar pela estrutura e documentação deste repositório:
   <p><sub><i>"Code is poetry written with logic."</i> — Pamela Menezes</sub></p>
   <br/>
 </div>
+
 
