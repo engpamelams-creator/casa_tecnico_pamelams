@@ -30,11 +30,11 @@
 > *"A tecnologia é a ferramenta, mas a psicologia humana é o manual de instruções."*
 
 Prazer, sou a **Pamela Menezes S.**! 👋
-Tenho 26 anos, sou de São Bernardo do Campo/SP e sou uma mulher **Autista**.
+Tenho 28 anos, sou de São Bernardo do Campo/SP e sou uma mulher **Autista**.
 
 Para mim, o código não é apenas sintaxe; é a linguagem onde minha mente encontra clareza. Minha neurodivergência me presenteou com um **hiperfoco** incansável e uma habilidade natural para **detectar padrões complexos** — qualidades que transformo em código limpo, seguro e eficiente.
 
-Hoje, me posiciono como **Desenvolvedora Full Stack Júnior**, buscando minha primeira oportunidade CLT para somar energia e técnica a um time inovador.
+Hoje, me posiciono como **Desenvolvedora Full Stack Júnior**, buscando minha primeira oportunidade CLT/PJ para somar energia e técnica a um time inovador.
 
 **Por que apostar em mim?**
 *   🚀 **Não sou aventureira:** Trago uma **bagagem de execução real**. Desenvolvi soluções autônomas para empresas, entregando desde automações em Python até plataformas Web completas.
@@ -112,4 +112,5 @@ Guia rápido para navegar pela estrutura e documentação deste repositório:
   <p><sub><i>"Code is poetry written with logic."</i> — Pamela Menezes</sub></p>
   <br/>
 </div>
+
 
