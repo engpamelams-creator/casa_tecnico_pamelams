@@ -1,7 +1,7 @@
 # 📘 Visão Geral e Decisões Técnicas
 
 <div align="center">
-  <img src="https://capsule-render.vercel.app/api?type=waving&color=0d1117&height=200&section=header&text=Vis%C3%A3o%20Geral&fontSize=50&fontColor=ffffff&desc=Performance%20%7C%20Seguran%C3%A7a%20%7C%20Simplicidade&descAlignY=60&descAlign=50" width="100%" />
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=0d1117&height=200&section=header&text=Documenta%C3%A7%C3%A3o%20Oficial&fontSize=50&fontColor=ffffff&desc=Vis%C3%A3o%20Geral%20%7C%20Estrutura%20%7C%20Deploy&descAlignY=60&descAlign=50" width="100%" />
 </div>
 
 <br />
@@ -53,21 +53,133 @@ Usei criptografia de ponta a ponta. Seja rodando no Frontend ou no Backend, o si
 
 ---
 
-## 📂 Como organizei as pastas
+## 🏆 Rifa Real - Project Walkthrough
 
-*   📂 `apps/client`: Aqui fica todo o **Site** (React).
-*   📂 `apps/server`: Aqui fica a **Lógica Python** (Django).
-*   📂 `render.yaml`: Arquivo que ensina o servidor de deploy a subir tudo sozinho.
+O **Rifa Real** opera em modo híbrido: pode rodar **100% Serverless** (apenas Frontend) ou **Full Stack** (com Django).
+
+### ✨ Principais Funcionalidades
+
+#### 1. 🌍 Multiplayer em Tempo Real (Supabase)
+*   **Live Sync:** O frontend conecta diretamente ao banco de dados via WebSockets.
+*   **Serverless Crypto:** O sorteio usa `window.crypto` (segurança militar) rodando direto no navegador, sem precisar de backend.
+
+#### 2. 🔐 Autenticação & Admin
+*   **Acesso Público:** Aberto para todos comprarem.
+*   **Admin Seguro:** Área protegida para resetar sorteios e ver ganhadores.
+
+#### 3. 🛡️ Backend & Infra (Architecture Demo)
+Mantivemos o código Python (`apps/server`) no repositório para demonstrar arquitetura robusta:
+*   **Django API:** Proteção contra Race Conditions (`select_for_update`).
+*   **Monorepo:** Organização profissional de pastas.
+
+![Login Screen](/login_page_view_1767813599824.png)
 
 ---
 
-## 🚀 Próximos Passos
-Se eu fosse continuar melhorando esse projeto amanhã, eu faria:
-1.  **Pagamento Real:** Integraria com o Pix.
-2.  **Testes E2E:** Criaria robôs para testar a compra de bilhetes automaticamente.
+## 🏗️ Estrutura do Projeto Royal Rifa
 
-<br />
+Este documento detalha a arquitetura do monorepo híbrido, facilitando a navegação e o entendimento por novos desenvolvedores.
 
+### 📂 Visão Geral de Diretórios
+
+```
+Teste_Tecnico_Pamela_Menezes/
+├── .github/              # 🤖 Configurações de CI/CD (GitHub Actions)
+├── apps/
+│   ├── client/           # 🎨 Frontend (React + Vite + Tailwind)
+│   │   ├── src/
+│   │   │   ├── modules/  # 📦 Módulos de funcionalidade (Rifa, Auth)
+│   │   │   ├── shared/   # 🤝 Componentes e Hooks reutilizáveis
+│   │   │   │   ├── components/ # (UI Kits, Botões, Modais)
+│   │   │   │   ├── context/    # (Estado Global: Temas, Conquistas)
+│   │   │   │   └── hooks/      # (Lógica: useAudio, useSpeech)
+│   │   │   └── core/     # ⚙️ Configurações base (Supabase, Rotas)
+│   │   └── tests/        # 🧪 Testes Unitários de Frontend
+│   │
+│   └── server/           # 🧠 Backend (Python/Django ou Scripts Auxiliares)
+│       └── api/          # 🔌 Endpoints e Lógica de Negócio Sever-side
+│
+├── tests/                # 🧪 Testes de Integração e E2E
+```
+
+### 🚀 Diferenciais de Arquitetura
+
+1.  **Monorepo Híbrido**: Mantém frontend e backend no mesmo versionamento, facilitando a sincronia de features e deploys atômicos.
+2.  **Design Atômico (Adaptado)**: Componentes organizados por escopo (`shared` vs `modules`), promovendo reutilização sem "over-engineering".
+3.  **State Management Híbrido**:
+    *   **Context API**: Para estados globais leves (Temas, Gamificação).
+    *   **Supabase Realtime**: Para estado crítico sincronizado (Venda de Bilhetes).
+    *   **Local Storage**: Para persistência de preferências do usuário.
+4.  **Segurança CSPRNG**: Utilização de `window.crypto` para geração de entropia em sorteios, garantindo justiça criptográfica.
+
+### 🛠️ Stack Tecnológica
+
+*   **Frontend**: React 18, Framer Motion (Animações), TailwindCSS (Estilo), Lucide (Ícones).
+*   **Backend/BaaS**: Supabase (PostgreSQL + Realtime + Auth).
+*   **Qualidade**: Vitest/Jest (Testes), ESLint (Linting), GitHub Actions (CI).
+
+---
+
+## 🚀 Guia de Deploy: Rifa Real no Render
+
+Este guia ensina como colocar sua aplicação Full Stack online usando o **Render**.
+
+### FASE 1: Preparação (Já Realizada) ✅
+O código já está configurado com:
+*   `build.sh` no backend.
+*   `requirements.txt` atualizado.
+*   `settings.py` com suporte a CORS e Banco de Dados.
+*   Alterações enviadas para o GitHub.
+
+### FASE 2: Subir o Backend (Web Service) 🐍
+1.  Acesse o [Render Dashboard](https://dashboard.render.com/).
+2.  Clique em **New +** -> **Web Service**.
+3.  Conecte seu repositório GitHub (`Teste_Tecnico_Pamela_Menezes`).
+
+**Configurações:**
+*   **Name:** `rifa-backend`
+*   **Root Directory:** `apps/server` ⚠️ (Essencial)
+*   **Runtime:** `Python 3`
+*   **Build Command:** `./build.sh`
+*   **Start Command:** `cd api && gunicorn setup_rifa.wsgi:application`
+
+#### OPÇÃO B: Modo "Serverless" (Só Frontend) ⚡
+Se quiser subir **apenas o Frontend** mas manter o sorteio seguro, nós implementamos `window.crypto` no React.
+*   Basta subir o **Static Site** (passo abaixo).
+*   O Backend (Django) fica no repositório como demonstração de arquitetura para o recrutador, mas não precisa estar rodando para a rifa funcionar.
+
+### Environment Variables (Variáveis de Ambiente):
+1.  `DATABASE_URL`: **IMPORTANTE:** Use a conexão IPv4 (Supavisor) para o Render funcionar.
+    *   Formato: `postgresql://[USER].[PROJECT_REF]:[PASSWORD]@aws-0-us-east-2.pooler.supabase.com:5432/postgres`
+    *   **Sua URL Pronta:** `postgresql://postgres.uqzkxtemxnwcoxswptaa:JasperSpencer1234%40@aws-0-us-east-2.pooler.supabase.com:5432/postgres`
+2.  `SECRET_KEY`: (Gere uma chave aleatória)
+3.  `PYTHON_VERSION`: `3.9.0`
+4.  `RENDER`: `true`
+
+Clique em **Create Web Service**. 
+⏳ **Aguarde ficar "Live"** e copie a URL gerada (ex: `https://rifa-backend.onrender.com`).
+
+### FASE 3: Subir o Frontend (Static Site) ⚛️
+1.  No Render, clique em **New +** -> **Static Site**.
+2.  Conecte o mesmo repositório.
+
+**Configurações:**
+*   **Name:** `rifa-frontend`
+*   **Root Directory:** `apps/client` ⚠️ (Essencial)
+*   **Build Command:** `npm install && npm run build`
+*   **Publish Directory:** `dist`
+
+**Environment Variables:**
+1.  `VITE_API_URL`: `https://rifa-backend.onrender.com` (Sua URL do backend, sem a barra `/` final).
+2.  `VITE_SUPABASE_URL`: (Sua URL do Supabase)
+3.  `VITE_SUPABASE_ANON_KEY`: (Sua chave pública do Supabase)
+
+Clique em **Create Static Site**.
+
+### ✅ Resolução de Problemas
+*   **Erro na Build do Backend?** Verifique se o `Root Directory` está exatamente como `apps/server`.
+*   **Frontend não carrega rifas?** Verifique se a variável `VITE_SUPABASE_URL` está correta no Render.
+*   **Erro de CORS?** O backend já está configurado para aceitar `*` (All Origins). Verifique se o deploy do backend terminou.
 
 ---
 
@@ -77,10 +189,10 @@ Atingimos a excelência técnica em todos os aspectos fundamentais do projeto.
 
 | Critério | Nota | Destaque |
 | :--- | :---: | :--- |
-| **Arquitetura e Organização** | **10/10** | Monorepo híbrido inteligente com documentação estrutural (`PROJECT_STRUCTURE.md`). |
+| **Arquitetura e Organização** | **10/10** | Monorepo híbrido inteligente com documentação consolidada. |
 | **Qualidade do Código** | **10/10** | Clean Code, Hooks customizados (`useSpeech`, `useAchievements`) e tipagem consistente. |
 | **Segurança e Boas Práticas** | **10/10** | CSPRNG (`window.crypto`) para sorteios auditáveis e seguros. |
-| **Documentação** | **10/10** | 🏅 4 Arquivos ricos: `README`, `INFO_PROJETOS`, `PROJECT_STRUCTURE` e `DEPLOY`. |
+| **Documentação** | **10/10** | 🏅 Documentação Unificada e Rica em `INFO_PROJETOS`. |
 | **Testes e Qualidade** | **10/10** | Cobertura completa: Vitest no Frontend + Pytest no Backend + **CI/CD no GitHub Actions**. |
 | **UI/UX e Design** | **10/10** | Design Neon moderno, **100% Responsivo (Mobile/Tablet)** e Gamificação integrada. |
 | **Deploy e DevOps** | **10/10** | Pipeline de CI automatizado (`.github/workflows`) e deploy contínuo configurado. |

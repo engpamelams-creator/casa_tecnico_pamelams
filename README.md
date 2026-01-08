@@ -29,10 +29,15 @@
 
 > *"A tecnologia é a ferramenta, mas a psicologia humana é o manual de instruções."*
 
-Sou **Desenvolvedora Full Stack** com uma bagagem única. Minha trajetória de 7 anos como **Psicóloga** me deu uma visão privilegiada sobre comportamento e liderança, que hoje aplico na arquitetura de software e gestão de times.
+Sou uma **Desenvolvedora Full Stack Júnior** pronta para minha primeira oportunidade fixa em uma empresa de tecnologia.
 
-*   🧠 **Neurodivergência como Superpoder:** Minha mente autista (TEA) adora padrões. Uso meu hiperfoco para encontrar bugs invisíveis e arquitetar soluções escaláveis.
-*   🚀 **Foco em Resultados:** Crio automações que economizam tempo real e dinheiro para negócios, usando Python, .NET e estratégias de Cloud.
+Embora esteja buscando minha primeira posição CLT, não sou uma iniciante sem prática. Trago uma **bagagem de execução real**:
+
+*   🚀 **Experiência Autônoma Comprovada:** Desenvolvi soluções completas para empresas e negócios locais, entregando desde automações em Python até plataformas Web complexas.
+*   📦 **Mão na Massa (Hands-on):** Tenho um portfólio rico de projetos pessoais e de estudo que simulam cenários reais de mercado (e-commerces, sistemas de gestão, dashboards).
+*   🧠 **Diferencial Competitivo:** Minha transição de carreira após 7 anos como **Psicóloga** me garante uma maturidade profissional rara em níveis Júnior. Tenho *soft skills* de liderança, comunicação e resolução de problemas já testadas em campo.
+
+**Meu Objetivo:** Entrar em um time onde eu possa somar com minha energia de entrega e continuar aprendendo com sêniores.
 
 ---
 
@@ -85,15 +90,15 @@ Sou **Desenvolvedora Full Stack** com uma bagagem única. Minha trajetória de 7
 
 Guia rápido para navegar pela estrutura e documentação deste repositório:
 
-| Arquivo / Pasta | Descrição & Função |
+| Arquivo / Pasta | Descrição |
 | :--- | :--- |
-| **`src/Rifa_Real/`** | **Frontend Moderno:** Aplicação React + Vite + Tailwind. Contém a UI interativa, animações (Framer Motion) e lógica de visualização. |
-| **`src/javascript/`** | **Core Logic (Node.js):** Implementação da lógica de rifa usando padrões de projeto (Singleton, Mutex) e segurança (Crypto). |
-| **`src/python_scripts/`** | **Backend Logic (Python):** Scripts de processamento de dados com tipagem forte (Dataclasses) e geração segura de números (Secrets). |
-| **`tests/`** | **QA & Testes:** Suíte de testes automatizados. `rifa.test.js` (Jest) para regras de negócio e `test_rifa.py` (Pytest) para segurança. |
-| **`INFO_PROJETOS.md`** | **Documentação Técnica:** Detalhes arquiteturais, stack tecnológico, decisões de engenharia e roadmap de escalabilidade. |
-| **`README_RESPOSTAS.md`** | **Base de Conhecimento:** Respostas teóricas aprofundadas sobre conceitos de programação e exercícios práticos resolvidos. |
-| **`README.md`** | **Perfil & Overview:** Este arquivo. Visão geral profissional, sobre mim, stack tecnológica e links de contato. |
+| `apps/client/` | **Frontend Moderno**: Aplicação React + Vite + Tailwind. Contém uma UI interativa, animações (Framer Motion) e lógica de visualização em Tempo Real. |
+| `apps/server/` | **Backend Logic (Python)**: API Django completa com travamento de banco (Mutex), autenticação e arquitetura escalável para demonstração. |
+| `src/javascript/` | **Core Logic (Node.js)**: Implementação da lógica de rifa do desafio técnico (Script `desafio_rifa.js`) com validações estritas e padrões funcionais. |
+| `tests/` | **QA & Testes**: Suíte de testes automatizados para garantir confiabilidade no Frontend e Backend. |
+| `INFO_PROJETOS.md` | **Documentação Técnica**: Detalhes arquitetônicos, stack tecnológico, decisões de engenharia e roadmap de escalabilidade. |
+| `README_RESPOSTAS.md` | **Base de Conhecimento**: Respostas teóricas aprofundadas com uma persona humana ("Pamela") e exercícios práticos resolvidos. |
+| `README.md` | **Perfil e Visão Geral**: Este arquivo. Visão geral profissional, sobre mim, pilha tecnológica e links de contato. |
 
 ---
 
