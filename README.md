@@ -29,15 +29,19 @@
 
 > *"A tecnologia é a ferramenta, mas a psicologia humana é o manual de instruções."*
 
-Sou uma **Desenvolvedora Full Stack Júnior** pronta para minha primeira oportunidade fixa em uma empresa de tecnologia.
+Prazer, sou a **Pamela Menezes S.**! 👋
+Tenho 26 anos, sou de São Bernardo do Campo/SP e sou uma mulher **Autista**.
 
-Embora esteja buscando minha primeira posição CLT,/ ou Pj não sou uma iniciante sem prática. Trago uma **bagagem de execução real**:
+Para mim, o código não é apenas sintaxe; é a linguagem onde minha mente encontra clareza. Minha neurodivergência me presenteou com um **hiperfoco** incansável e uma habilidade natural para **detectar padrões complexos** — qualidades que transformo em código limpo, seguro e eficiente.
 
-*   🚀 **Experiência Autônoma Comprovada:** Desenvolvi soluções completas para empresas e negócios locais, entregando desde automações em Python até plataformas Web complexas.
-*   📦 **Mão na Massa (Hands-on):** Tenho um portfólio rico de projetos pessoais e de estudo que simulam cenários reais de mercado (e-commerces, sistemas de gestão, dashboards).
-*   🧠 **Diferencial Competitivo:** Minha transição de carreira após 7 anos como **Psicóloga** me garante uma maturidade profissional rara em níveis Júnior. Tenho *soft skills* de liderança, comunicação e resolução de problemas já testadas em campo.
+Hoje, me posiciono como **Desenvolvedora Full Stack Júnior**, buscando minha primeira oportunidade CLT para somar energia e técnica a um time inovador.
 
-**Meu Objetivo:** Entrar em um time onde eu possa somar com minha energia de entrega e continuar aprendendo com sêniores.
+**Por que apostar em mim?**
+*   🚀 **Não sou aventureira:** Trago uma **bagagem de execução real**. Desenvolvi soluções autônomas para empresas, entregando desde automações em Python até plataformas Web completas.
+*   🧠 **Maturidade Profissional:** Minha transição de carreira após 7 anos como **Psicóloga** me deu *soft skills* de liderança e comunicação que a maioria dos juniores ainda vai levar anos para desenvolver.
+*   📦 **Mão na Massa:** Meu portfólio não tem apenas clones de tutorial e "to-do lists". Tem sistemas reais, problemas reais e soluções reais.
+
+🔗 **Conheça meu mundo e meus projetos:** [**devpamelams.com.br**](https://devpamelams.com.br)
 
 ---
 
@@ -108,5 +112,4 @@ Guia rápido para navegar pela estrutura e documentação deste repositório:
   <p><sub><i>"Code is poetry written with logic."</i> — Pamela Menezes</sub></p>
   <br/>
 </div>
-
 
