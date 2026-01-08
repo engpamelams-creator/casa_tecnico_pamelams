@@ -6,9 +6,34 @@
 
 <br />
 
+
 > **Status:** Pronto para Uso! 🚀
 > **O que é:** Um sistema completo de Rifas com sorteio real, seguro e ao vivo.
 > **Foco:** Ser rápido, confiável e fácil de entender.
+
+---
+
+## 🐳 Como Rodar com Docker (Novo!)
+
+Para facilitar o desenvolvimento local e evitar conflitos de dependências, agora suportamos **Docker Comopose**.
+
+### Pré-requisitos
+- Docker Desktop instalado e rodando.
+
+### Passo a Passo
+1.  **Subir o Ambiente:**
+    ```bash
+    docker-compose up --build
+    ```
+    Isso vai iniciar o Banco de Dados, o Backend e o Frontend.
+
+2.  **Acessar:**
+    - **Frontend:** http://localhost:5173
+    - **Backend (API):** http://localhost:8000
+    - **Admin Django:** http://localhost:8000/admin
+
+3.  **Encerrar:**
+    Pressione `Ctrl+C` no terminal ou rode `docker-compose down`.
 
 ---
 

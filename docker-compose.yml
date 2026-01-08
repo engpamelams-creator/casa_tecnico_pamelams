@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5432:5432"
+
+  backend:
+    build: 
+      context: ./apps/server
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./apps/server:/app
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgres://postgres:postgres@db:5432/postgres
+      - DEBUG=True
+      - SECRET_KEY=insecure-dev-key
+      - ALLOWED_HOSTS=*
+    depends_on:
+      - db
+    # Wait for DB to be ready
+    healthcheck:
+        test: ["CMD-SHELL", "pg_isready -h db -U postgres"]
+        interval: 5s
+        timeout: 5s
+        retries: 5
+
+  frontend:
+    build: 
+      context: ./apps/client
+    volumes:
+      - ./apps/client:/app
+      - /app/node_modules
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_API_URL=http://localhost:8000
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
